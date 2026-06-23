@@ -1,0 +1,43 @@
+# ===== Unity =====
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+[Rr]ecordings/
+
+# Asset meta data (폴더는 유지하되 빈 폴더의 meta는 제외)
+!/[Aa]ssets/**/*.meta
+
+# Unity 생성물
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# VRChat / VCC
+.vrc/
+[Pp]ackages/com.vrchat.*/
+
+# OS / 에디터
+.DS_Store
+Thumbs.db
+.vs/
+.idea/
+.vscode/
+
+# 원본 참고 이미지(원하면 커밋해도 됨)
+# *.png
