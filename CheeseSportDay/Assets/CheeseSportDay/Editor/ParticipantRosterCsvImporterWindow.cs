@@ -112,7 +112,6 @@ namespace CheeseSportDay.Editor
             targetScreen.teamworkValues = teamworkValues.ToArray();
             targetScreen.physicalValues = physicalValues.ToArray();
             targetScreen.luckValues = luckValues.ToArray();
-            ApplyStatLabels(headers, targetScreen, skillColumn, senseColumn, teamworkColumn, physicalColumn, luckColumn);
             targetScreen.RefreshAll();
 
             EditorUtility.SetDirty(targetScreen);
@@ -164,15 +163,6 @@ namespace CheeseSportDay.Editor
             }
 
             return sprite;
-        }
-
-        private static void ApplyStatLabels(string[] headers, ParticipantRosterScreen screen, int skillColumn, int senseColumn, int teamworkColumn, int physicalColumn, int luckColumn)
-        {
-            if (skillColumn >= 0) screen.gameSkillLabel = headers[skillColumn];
-            if (senseColumn >= 0) screen.gameSenseLabel = headers[senseColumn];
-            if (teamworkColumn >= 0) screen.teamworkLabel = headers[teamworkColumn];
-            if (physicalColumn >= 0) screen.physicalLabel = headers[physicalColumn];
-            if (luckColumn >= 0) screen.luckLabel = headers[luckColumn];
         }
 
         private static string BuildDetailText(string[] headers, string[] row, bool[] knownColumns, int detailColumn)

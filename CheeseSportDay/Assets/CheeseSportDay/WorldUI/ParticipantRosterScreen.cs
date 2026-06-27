@@ -21,36 +21,22 @@ namespace CheeseSportDay.WorldUI
         public int[] luckValues;
 
         [Header("Grid")]
-        public ParticipantCardButton[] cardButtons;
-        public GameObject[] cardRoots;
-        public Image[] cardBackgroundImages;
-        public Image[] cardPortraitImages;
-        public Text[] cardNameTexts;
+        public ParticipantCard[] participantCards;
         public Text pageText;
         public Color normalCardColor = new Color(0.92f, 0.92f, 0.92f, 1f);
         public Color selectedCardColor = new Color(1f, 0.92f, 0.35f, 1f);
 
         [Header("Detail")]
-        public GameObject detailRoot;
-        public Image detailPortraitImage;
-        public Text detailNameText;
-        public Text detailTitleText;
-        public Text detailBodyText;
-        public Text gameSkillText;
-        public Text gameSenseText;
-        public Text teamworkText;
-        public Text physicalText;
-        public Text luckText;
+        public DetailScreen detailRoot;
 
-        [Header("Labels")]
-        public string gameSkillLabel = "Skill";
-        public string gameSenseLabel = "Sense";
-        public string teamworkLabel = "Teamwork";
-        public string physicalLabel = "Physical";
-        public string luckLabel = "Luck";
+        [Header("Team Assignment")]
+        public ParticipantTeamBoardScreen teamBoardScreen;
+        public Text detailTeamText;
+        public string teamLabel = "Team";
+        public string unassignedTeamLabel = "Unassigned";
 
         [Header("State")]
-        public bool selectFirstParticipantOnStart = true;
+        public bool selectFirstParticipantOnStart = false;
         public bool syncSelectionForEveryone = true;
 
         [UdonSynced]
@@ -120,6 +106,16 @@ namespace CheeseSportDay.WorldUI
             RefreshAll();
         }
 
+        public void AssignSelectedParticipantToTeam(int teamIndex)
+        {
+            if (teamBoardScreen == null || selectedIndex < 0)
+            {
+                return;
+            }
+
+            teamBoardScreen.AssignParticipant(selectedIndex, teamIndex);
+        }
+
         public void RefreshAll()
         {
             RefreshGrid();
@@ -134,41 +130,33 @@ namespace CheeseSportDay.WorldUI
 
             for (int i = 0; i < cardCount; i++)
             {
+                if (participantCards == null || i >= participantCards.Length)
+                {
+                    continue;
+                }
+
+                ParticipantCard card = participantCards[i];
+                if (card == null)
+                {
+                    continue;
+                }
+
                 int participantIndex = startIndex + i;
                 bool hasParticipant = participantIndex >= 0 && participantIndex < GetParticipantCount();
-
-                if (cardRoots != null && i < cardRoots.Length && cardRoots[i] != null)
-                {
-                    cardRoots[i].SetActive(hasParticipant);
-                }
-
-                if (cardButtons != null && i < cardButtons.Length && cardButtons[i] != null)
-                {
-                    cardButtons[i].rosterScreen = this;
-                    cardButtons[i].participantIndex = hasParticipant ? participantIndex : -1;
-                }
+                card.gameObject.SetActive(hasParticipant);
 
                 if (!hasParticipant)
                 {
                     continue;
                 }
 
-                if (cardNameTexts != null && i < cardNameTexts.Length && cardNameTexts[i] != null)
-                {
-                    cardNameTexts[i].text = GetString(participantNames, participantIndex, "");
-                }
-
-                if (cardPortraitImages != null && i < cardPortraitImages.Length && cardPortraitImages[i] != null)
-                {
-                    Sprite portrait = GetSprite(participantPortraits, participantIndex);
-                    cardPortraitImages[i].sprite = portrait;
-                    cardPortraitImages[i].enabled = portrait != null;
-                }
-
-                if (cardBackgroundImages != null && i < cardBackgroundImages.Length && cardBackgroundImages[i] != null)
-                {
-                    cardBackgroundImages[i].color = participantIndex == selectedIndex ? selectedCardColor : normalCardColor;
-                }
+                card.Bind(this, participantIndex);
+                card.SetContent(
+                    GetString(participantNames, participantIndex, ""),
+                    GetSprite(participantPortraits, participantIndex),
+                    participantIndex == selectedIndex,
+                    normalCardColor,
+                    selectedCardColor);
             }
         }
 
@@ -176,43 +164,33 @@ namespace CheeseSportDay.WorldUI
         {
             bool hasSelection = selectedIndex >= 0 && selectedIndex < GetParticipantCount();
 
-            if (detailRoot != null)
-            {
-                detailRoot.SetActive(hasSelection);
-            }
-
             if (!hasSelection)
             {
                 return;
             }
 
-            if (detailNameText != null)
-            {
-                detailNameText.text = GetString(participantNames, selectedIndex, "");
-            }
+            detailRoot.RefreshDetail(GetString(participantNames, selectedIndex, ""),
+                GetString(participantTitles, selectedIndex, ""),
+                GetString(participantDetails, selectedIndex, ""),
+                GetSprite(participantPortraits, selectedIndex),
+                GetInt(gameSkillValues, selectedIndex),
+                GetInt(gameSenseValues, selectedIndex),
+                GetInt(teamworkValues, selectedIndex),
+                GetInt(physicalValues, selectedIndex),
+                GetInt(luckValues, selectedIndex)
+                );
 
-            if (detailTitleText != null)
-            {
-                detailTitleText.text = GetString(participantTitles, selectedIndex, "");
-            }
+            detailRoot.gameObject.SetActive(true);
 
-            if (detailBodyText != null)
-            {
-                detailBodyText.text = GetString(participantDetails, selectedIndex, "");
-            }
 
-            if (detailPortraitImage != null)
+            if (detailTeamText != null)
             {
-                Sprite portrait = GetSprite(participantPortraits, selectedIndex);
-                detailPortraitImage.sprite = portrait;
-                detailPortraitImage.enabled = portrait != null;
+                int teamIndex = teamBoardScreen == null ? -1 : teamBoardScreen.GetParticipantTeam(selectedIndex);
+                string currentTeamName = teamIndex < 0
+                    ? unassignedTeamLabel
+                    : teamBoardScreen.GetTeamName(teamIndex);
+                detailTeamText.text = teamLabel + ": " + currentTeamName;
             }
-
-            SetStatText(gameSkillText, gameSkillLabel, GetInt(gameSkillValues, selectedIndex));
-            SetStatText(gameSenseText, gameSenseLabel, GetInt(gameSenseValues, selectedIndex));
-            SetStatText(teamworkText, teamworkLabel, GetInt(teamworkValues, selectedIndex));
-            SetStatText(physicalText, physicalLabel, GetInt(physicalValues, selectedIndex));
-            SetStatText(luckText, luckLabel, GetInt(luckValues, selectedIndex));
         }
 
         private void RefreshPageText()
@@ -244,21 +222,21 @@ namespace CheeseSportDay.WorldUI
             RequestSerialization();
         }
 
-        private int GetParticipantCount()
+        public int GetParticipantCount()
         {
             return participantNames == null ? 0 : participantNames.Length;
         }
 
+        public string GetParticipantName(int participantIndex)
+        {
+            return GetString(participantNames, participantIndex, "");
+        }
+
         private int GetCardsPerPage()
         {
-            if (cardButtons != null && cardButtons.Length > 0)
+            if (participantCards != null && participantCards.Length > 0)
             {
-                return cardButtons.Length;
-            }
-
-            if (cardRoots != null && cardRoots.Length > 0)
-            {
-                return cardRoots.Length;
+                return participantCards.Length;
             }
 
             return 1;
@@ -330,14 +308,6 @@ namespace CheeseSportDay.WorldUI
             }
 
             return values[index];
-        }
-
-        private void SetStatText(Text target, string label, int value)
-        {
-            if (target != null)
-            {
-                target.text = label + " " + value.ToString();
-            }
         }
     }
 }
