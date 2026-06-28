@@ -64,7 +64,6 @@ namespace CheeseSportDay.Editor
 
             WorldScreenButton screenButton = button.AddComponent<WorldScreenButton>();
             screenButton.screenController = controller;
-            screenButton.buttonAction = WorldScreenButtonAction.Toggle;
 
             GameObject label = new GameObject("Button Label", typeof(TextMesh));
             Undo.RegisterCreatedObjectUndo(label, "Create Button Label");

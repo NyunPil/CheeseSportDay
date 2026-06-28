@@ -169,6 +169,8 @@ namespace CheeseSportDay.Editor
             board.teamCaptainPortraits = captainPortraits.ToArray();
             board.teamColors = teamColors.ToArray();
 
+            AssignCaptainNamesToButtons(captainNames, warnings);
+
             int participantCount = targetScreen.GetParticipantCount();
             board.participantTeamIndices = new int[participantCount];
             for (int i = 0; i < board.participantTeamIndices.Length; i++)
@@ -192,6 +194,35 @@ namespace CheeseSportDay.Editor
             }
 
             EditorUtility.DisplayDialog("Team CSV Import", message, "OK");
+        }
+
+        private void AssignCaptainNamesToButtons(List<string> captainNames, List<string> warnings)
+        {
+            WorldScreenButton[] buttons = targetScreen.teamButtons;
+            int buttonCount = buttons == null ? 0 : buttons.Length;
+
+            if (buttonCount < captainNames.Count)
+            {
+                warnings.Add(
+                    "Only " + buttonCount.ToString()
+                    + " team buttons are assigned for " + captainNames.Count.ToString()
+                    + " captains.");
+            }
+
+            for (int i = 0; i < buttonCount; i++)
+            {
+                WorldScreenButton button = buttons[i];
+                if (button == null)
+                {
+                    warnings.Add("Team button element " + i.ToString() + " is empty.");
+                    continue;
+                }
+
+                Undo.RecordObject(button, "Assign Team Captain Name");
+                button.captainName = i < captainNames.Count ? captainNames[i] : "";
+                EditorUtility.SetDirty(button);
+                PrefabUtility.RecordPrefabInstancePropertyModifications(button);
+            }
         }
 
         private Sprite LoadPortrait(string rawPath, List<string> warnings)

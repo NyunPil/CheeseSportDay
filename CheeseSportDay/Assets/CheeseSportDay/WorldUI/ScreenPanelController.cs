@@ -1,5 +1,6 @@
 using UdonSharp;
 using UnityEngine;
+using UnityEngine.UI;
 using VRC.SDKBase;
 
 namespace CheeseSportDay.WorldUI
@@ -19,6 +20,10 @@ namespace CheeseSportDay.WorldUI
 
         [Tooltip("When enabled, one player's button press updates the screen for everyone.")]
         public bool syncForEveryone = true;
+
+        [Header("д╚©Нем")]
+        public Text countText;
+        public string nowCounterCaptain;
 
         [UdonSynced]
         private bool activeViewVisible;
@@ -45,16 +50,6 @@ namespace CheeseSportDay.WorldUI
         public void ToggleActiveView()
         {
             SetActiveViewVisible(!activeViewVisible);
-        }
-
-        public void ShowActiveView()
-        {
-            SetActiveViewVisible(true);
-        }
-
-        public void HideActiveView()
-        {
-            SetActiveViewVisible(false);
         }
 
         public void SetActiveViewVisible(bool visible)
@@ -87,6 +82,11 @@ namespace CheeseSportDay.WorldUI
             if (activeView != null)
             {
                 activeView.SetActive(activeViewVisible);
+            }
+
+            if (!activeViewVisible)
+            {
+                nowCounterCaptain = null;
             }
         }
     }

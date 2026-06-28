@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UdonSharp;
 using UnityEngine;
 using UnityEngine.UI;
@@ -31,11 +32,12 @@ namespace CheeseSportDay.WorldUI
 
         [Header("Team Assignment")]
         public ParticipantTeamBoardScreen teamBoardScreen;
+        public WorldScreenButton[] teamButtons;
 
         [Header("State")]
         public bool selectFirstParticipantOnStart = false;
         public bool syncSelectionForEveryone = true;
-
+        
         [UdonSynced]
         private int syncedPage;
 

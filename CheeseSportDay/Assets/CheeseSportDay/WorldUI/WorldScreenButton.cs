@@ -18,8 +18,8 @@ namespace CheeseSportDay.WorldUI
         [Tooltip("The screen controller this interact button should drive.")]
         public ScreenPanelController screenController;
 
-        [Tooltip("What happens when a player interacts with this button.")]
-        public WorldScreenButtonAction buttonAction = WorldScreenButtonAction.Toggle;
+        [Header("Captain Name")]
+        public string captainName;
 
         public override void Interact()
         {
@@ -28,18 +28,15 @@ namespace CheeseSportDay.WorldUI
                 return;
             }
 
-            if (buttonAction == WorldScreenButtonAction.Show)
+            if(!string.IsNullOrEmpty(screenController.nowCounterCaptain) && screenController.nowCounterCaptain != captainName)
             {
-                screenController.ShowActiveView();
+                return;
             }
-            else if (buttonAction == WorldScreenButtonAction.Hide)
-            {
-                screenController.HideActiveView();
-            }
-            else
-            {
-                screenController.ToggleActiveView();
-            }
+
+            screenController.nowCounterCaptain = captainName;
+
+            screenController.ToggleActiveView();
+            screenController.countText.text = $"»¯ ¾î ¿À ±â!\n{captainName}";
         }
     }
 }
