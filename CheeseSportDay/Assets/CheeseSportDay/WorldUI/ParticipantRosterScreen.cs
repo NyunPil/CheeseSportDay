@@ -31,9 +31,6 @@ namespace CheeseSportDay.WorldUI
 
         [Header("Team Assignment")]
         public ParticipantTeamBoardScreen teamBoardScreen;
-        public Text detailTeamText;
-        public string teamLabel = "Team";
-        public string unassignedTeamLabel = "Unassigned";
 
         [Header("State")]
         public bool selectFirstParticipantOnStart = false;
@@ -181,16 +178,6 @@ namespace CheeseSportDay.WorldUI
                 );
 
             detailRoot.gameObject.SetActive(true);
-
-
-            if (detailTeamText != null)
-            {
-                int teamIndex = teamBoardScreen == null ? -1 : teamBoardScreen.GetParticipantTeam(selectedIndex);
-                string currentTeamName = teamIndex < 0
-                    ? unassignedTeamLabel
-                    : teamBoardScreen.GetTeamName(teamIndex);
-                detailTeamText.text = teamLabel + ": " + currentTeamName;
-            }
         }
 
         private void RefreshPageText()
@@ -230,6 +217,11 @@ namespace CheeseSportDay.WorldUI
         public string GetParticipantName(int participantIndex)
         {
             return GetString(participantNames, participantIndex, "");
+        }
+
+        public Sprite GetParticipantPortrait(int participantIndex)
+        {
+            return GetSprite(participantPortraits, participantIndex);
         }
 
         private int GetCardsPerPage()

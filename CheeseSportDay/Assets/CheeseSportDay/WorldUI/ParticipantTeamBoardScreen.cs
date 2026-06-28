@@ -1,6 +1,5 @@
 using UdonSharp;
 using UnityEngine;
-using UnityEngine.UI;
 using VRC.SDKBase;
 
 namespace CheeseSportDay.WorldUI
@@ -12,11 +11,12 @@ namespace CheeseSportDay.WorldUI
         [Header("Data")]
         public ParticipantRosterScreen rosterScreen;
         public string[] teamNames = { "Red Team", "Blue Team" };
+        public string[] teamCaptainNames = { "Red Captain", "Blue Captain" };
+        public Sprite[] teamCaptainPortraits = new Sprite[2];
+        public Color[] teamColors = { new Color(0.82f, 0.18f, 0.18f, 1f), new Color(0.15f, 0.4f, 0.85f, 1f) };
 
         [Header("View")]
-        public Text[] teamNameTexts;
-        public Text[] teamMemberTexts;
-        public string emptyTeamText = "-";
+        public ParticipantTeamColumn[] teamColumns;
 
         [UdonSynced, HideInInspector]
         public int[] participantTeamIndices = new int[0];
@@ -72,6 +72,17 @@ namespace CheeseSportDay.WorldUI
             return participantTeamIndices[participantIndex];
         }
 
+        public int GetTeamCount()
+        {
+            int teamCount = teamNames == null ? 0 : teamNames.Length;
+            if (teamCaptainNames != null && teamCaptainNames.Length > teamCount)
+            {
+                teamCount = teamCaptainNames.Length;
+            }
+
+            return teamCount;
+        }
+
         public string GetTeamName(int teamIndex)
         {
             if (!IsValidTeam(teamIndex))
@@ -79,8 +90,41 @@ namespace CheeseSportDay.WorldUI
                 return "";
             }
 
-            string value = teamNames[teamIndex];
-            return string.IsNullOrEmpty(value) ? "Team " + (teamIndex + 1).ToString() : value;
+            if (teamNames != null
+                && teamIndex < teamNames.Length
+                && !string.IsNullOrEmpty(teamNames[teamIndex]))
+            {
+                return teamNames[teamIndex];
+            }
+
+            return GetTeamButtonLabel(teamIndex) + " Team";
+        }
+
+        public string GetTeamButtonLabel(int teamIndex)
+        {
+            if (!IsValidTeam(teamIndex))
+            {
+                return "";
+            }
+
+            if (teamCaptainNames != null
+                && teamIndex < teamCaptainNames.Length
+                && !string.IsNullOrEmpty(teamCaptainNames[teamIndex]))
+            {
+                return teamCaptainNames[teamIndex];
+            }
+
+            return GetTeamNameFallback(teamIndex);
+        }
+
+        public Color GetTeamColor(int teamIndex)
+        {
+            if (teamColors != null && teamIndex >= 0 && teamIndex < teamColors.Length)
+            {
+                return teamColors[teamIndex];
+            }
+
+            return Color.gray;
         }
 
         public void RefreshAllViews()
@@ -95,50 +139,96 @@ namespace CheeseSportDay.WorldUI
 
         private void RefreshBoard()
         {
+            if (teamColumns == null)
+            {
+                return;
+            }
+
             int teamCount = GetTeamCount();
-            for (int teamIndex = 0; teamIndex < teamCount; teamIndex++)
+            for (int teamIndex = 0; teamIndex < teamColumns.Length; teamIndex++)
             {
-                if (teamNameTexts != null
-                    && teamIndex < teamNameTexts.Length
-                    && teamNameTexts[teamIndex] != null)
-                {
-                    teamNameTexts[teamIndex].text = GetTeamName(teamIndex);
-                }
-
-                if (teamMemberTexts != null
-                    && teamIndex < teamMemberTexts.Length
-                    && teamMemberTexts[teamIndex] != null)
-                {
-                    teamMemberTexts[teamIndex].text = BuildTeamMemberList(teamIndex);
-                }
-            }
-        }
-
-        private string BuildTeamMemberList(int teamIndex)
-        {
-            if (rosterScreen == null)
-            {
-                return emptyTeamText;
-            }
-
-            string result = "";
-            int participantCount = rosterScreen.GetParticipantCount();
-            for (int participantIndex = 0; participantIndex < participantCount; participantIndex++)
-            {
-                if (GetParticipantTeam(participantIndex) != teamIndex)
+                ParticipantTeamColumn column = teamColumns[teamIndex];
+                if (column == null)
                 {
                     continue;
                 }
 
-                if (!string.IsNullOrEmpty(result))
+                bool hasTeam = teamIndex < teamCount;
+                column.gameObject.SetActive(hasTeam);
+                if (!hasTeam)
                 {
-                    result += "\n";
+                    continue;
                 }
 
-                result += rosterScreen.GetParticipantName(participantIndex);
+                column.SetTeam(GetTeamName(teamIndex), GetTeamColor(teamIndex));
+                column.ClearMembers();
+
+                int memberSlot = 0;
+                string captainName = GetCaptainName(teamIndex);
+                if (!string.IsNullOrEmpty(captainName))
+                {
+                    column.SetMember(memberSlot, captainName, GetCaptainPortrait(teamIndex));
+                    memberSlot++;
+                }
+
+                if (rosterScreen == null)
+                {
+                    continue;
+                }
+
+                int participantCount = rosterScreen.GetParticipantCount();
+                for (int participantIndex = 0; participantIndex < participantCount; participantIndex++)
+                {
+                    if (GetParticipantTeam(participantIndex) != teamIndex)
+                    {
+                        continue;
+                    }
+
+                    column.SetMember(
+                        memberSlot,
+                        rosterScreen.GetParticipantName(participantIndex),
+                        rosterScreen.GetParticipantPortrait(participantIndex));
+                    memberSlot++;
+
+                    if (memberSlot >= column.GetMemberCapacity())
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+        private string GetCaptainName(int teamIndex)
+        {
+            if (teamCaptainNames == null || teamIndex < 0 || teamIndex >= teamCaptainNames.Length)
+            {
+                return "";
             }
 
-            return string.IsNullOrEmpty(result) ? emptyTeamText : result;
+            return teamCaptainNames[teamIndex];
+        }
+
+        private Sprite GetCaptainPortrait(int teamIndex)
+        {
+            if (teamCaptainPortraits == null || teamIndex < 0 || teamIndex >= teamCaptainPortraits.Length)
+            {
+                return null;
+            }
+
+            return teamCaptainPortraits[teamIndex];
+        }
+
+        private string GetTeamNameFallback(int teamIndex)
+        {
+            if (teamNames != null
+                && teamIndex >= 0
+                && teamIndex < teamNames.Length
+                && !string.IsNullOrEmpty(teamNames[teamIndex]))
+            {
+                return teamNames[teamIndex];
+            }
+
+            return "Team " + (teamIndex + 1).ToString();
         }
 
         private bool EnsureAssignmentArray()
@@ -167,11 +257,6 @@ namespace CheeseSportDay.WorldUI
         private bool IsValidTeam(int teamIndex)
         {
             return teamIndex >= 0 && teamIndex < GetTeamCount();
-        }
-
-        private int GetTeamCount()
-        {
-            return teamNames == null ? 0 : teamNames.Length;
         }
     }
 }

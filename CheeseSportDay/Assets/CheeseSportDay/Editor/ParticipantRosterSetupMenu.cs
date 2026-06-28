@@ -292,7 +292,7 @@ namespace CheeseSportDay.Editor
 
             Text text = textObject.GetComponent<Text>();
             text.text = value;
-            text.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             text.fontSize = size;
             text.alignment = alignment;
             text.color = color;

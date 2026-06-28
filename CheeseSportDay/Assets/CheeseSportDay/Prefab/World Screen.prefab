@@ -220,7 +220,7 @@ GameObject:
   - component: {fileID: 4997857943193639471}
   - component: {fileID: 8262323414531838423}
   m_Layer: 0
-  m_Name: World Screen Prototype
+  m_Name: World Screen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -433,10 +433,7 @@ MonoBehaviour:
   selectedCardColor: {r: 1, g: 0.92, b: 0.35, a: 1}
   detailRoot: {fileID: 875253124121567112}
   teamBoardScreen: {fileID: 0}
-  detailTeamText: {fileID: 0}
-  teamLabel: Team
-  unassignedTeamLabel: Unassigned
-  selectFirstParticipantOnStart: 1
+  selectFirstParticipantOnStart: 0
   syncSelectionForEveryone: 1
 --- !u!114 &6692411476382433068
 MonoBehaviour:
@@ -566,7 +563,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
+  m_Text: "\uBE8F\uC5B4\uC624\uAE30 \uBC1C\uB3D9!\n\uC0AC\uC6A9\uC790 : \uB204\uAD6C"
 --- !u!1 &6514040501756579941
 GameObject:
   m_ObjectHideFlags: 0
@@ -732,6 +729,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Participant Card (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3761835183371981686, guid: af347fd6cc7b2e14d9fe64d449956c3a,
+        type: 3}
+      propertyPath: _syncMethod
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3974858948552350147, guid: af347fd6cc7b2e14d9fe64d449956c3a,
         type: 3}
@@ -906,6 +908,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3761835183371981686, guid: af347fd6cc7b2e14d9fe64d449956c3a,
+        type: 3}
+      propertyPath: _syncMethod
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4439435792711723073, guid: af347fd6cc7b2e14d9fe64d449956c3a,
         type: 3}
       propertyPath: m_Pivot.x
@@ -1062,6 +1069,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3761835183371981686, guid: af347fd6cc7b2e14d9fe64d449956c3a,
+        type: 3}
+      propertyPath: _syncMethod
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4439435792711723073, guid: af347fd6cc7b2e14d9fe64d449956c3a,
         type: 3}
@@ -1220,6 +1232,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3761835183371981686, guid: af347fd6cc7b2e14d9fe64d449956c3a,
+        type: 3}
+      propertyPath: _syncMethod
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4439435792711723073, guid: af347fd6cc7b2e14d9fe64d449956c3a,
         type: 3}
       propertyPath: m_Pivot.x
@@ -1377,6 +1394,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3761835183371981686, guid: af347fd6cc7b2e14d9fe64d449956c3a,
+        type: 3}
+      propertyPath: _syncMethod
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4439435792711723073, guid: af347fd6cc7b2e14d9fe64d449956c3a,
         type: 3}
       propertyPath: m_Pivot.x
@@ -1528,6 +1550,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Participant Card (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3761835183371981686, guid: af347fd6cc7b2e14d9fe64d449956c3a,
+        type: 3}
+      propertyPath: _syncMethod
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3974858948552350147, guid: af347fd6cc7b2e14d9fe64d449956c3a,
         type: 3}
@@ -1702,6 +1729,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3761835183371981686, guid: af347fd6cc7b2e14d9fe64d449956c3a,
+        type: 3}
+      propertyPath: _syncMethod
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4439435792711723073, guid: af347fd6cc7b2e14d9fe64d449956c3a,
         type: 3}
       propertyPath: m_Pivot.x
@@ -1853,6 +1885,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Participant Card
+      objectReference: {fileID: 0}
+    - target: {fileID: 3761835183371981686, guid: af347fd6cc7b2e14d9fe64d449956c3a,
+        type: 3}
+      propertyPath: _syncMethod
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3974858948552350147, guid: af347fd6cc7b2e14d9fe64d449956c3a,
         type: 3}
@@ -2027,6 +2064,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3761835183371981686, guid: af347fd6cc7b2e14d9fe64d449956c3a,
+        type: 3}
+      propertyPath: _syncMethod
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4439435792711723073, guid: af347fd6cc7b2e14d9fe64d449956c3a,
         type: 3}
       propertyPath: m_Pivot.x
@@ -2179,11 +2221,28 @@ PrefabInstance:
       propertyPath: m_Name
       value: Detail Panel
       objectReference: {fileID: 0}
-    - target: {fileID: 1065501968367486496, guid: 30256496efae9f442a839811374a9d65,
+    - target: {fileID: 2307486979469010646, guid: 30256496efae9f442a839811374a9d65,
         type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
+      propertyPath: rosterScreen
+      value: 
+      objectReference: {fileID: 6854918807510820095}
+    - target: {fileID: 2307486979469010646, guid: 30256496efae9f442a839811374a9d65,
+        type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 2307486979469010646, guid: 30256496efae9f442a839811374a9d65,
+        type: 3}
+    - target: {fileID: 3713828734583403941, guid: 30256496efae9f442a839811374a9d65,
+        type: 3}
+      propertyPath: rosterScreen
+      value: 
+      objectReference: {fileID: 6854918807510820095}
+    - target: {fileID: 3713828734583403941, guid: 30256496efae9f442a839811374a9d65,
+        type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 3713828734583403941, guid: 30256496efae9f442a839811374a9d65,
+        type: 3}
     - target: {fileID: 4565283979127169507, guid: 30256496efae9f442a839811374a9d65,
         type: 3}
       propertyPath: serializationData.Prefab
@@ -2296,6 +2355,39 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5774000497188927739, guid: 30256496efae9f442a839811374a9d65,
+        type: 3}
+      propertyPath: rosterScreen
+      value: 
+      objectReference: {fileID: 6854918807510820095}
+    - target: {fileID: 5774000497188927739, guid: 30256496efae9f442a839811374a9d65,
+        type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 5774000497188927739, guid: 30256496efae9f442a839811374a9d65,
+        type: 3}
+    - target: {fileID: 6728212976556438476, guid: 30256496efae9f442a839811374a9d65,
+        type: 3}
+      propertyPath: rosterScreen
+      value: 
+      objectReference: {fileID: 6854918807510820095}
+    - target: {fileID: 6728212976556438476, guid: 30256496efae9f442a839811374a9d65,
+        type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 6728212976556438476, guid: 30256496efae9f442a839811374a9d65,
+        type: 3}
+    - target: {fileID: 8027070868909201972, guid: 30256496efae9f442a839811374a9d65,
+        type: 3}
+      propertyPath: rosterScreen
+      value: 
+      objectReference: {fileID: 6854918807510820095}
+    - target: {fileID: 8027070868909201972, guid: 30256496efae9f442a839811374a9d65,
+        type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 8027070868909201972, guid: 30256496efae9f442a839811374a9d65,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2331,6 +2423,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Participant Card (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3761835183371981686, guid: af347fd6cc7b2e14d9fe64d449956c3a,
+        type: 3}
+      propertyPath: _syncMethod
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3974858948552350147, guid: af347fd6cc7b2e14d9fe64d449956c3a,
         type: 3}
@@ -2500,6 +2597,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Participant Card (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 3761835183371981686, guid: af347fd6cc7b2e14d9fe64d449956c3a,
+        type: 3}
+      propertyPath: _syncMethod
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3974858948552350147, guid: af347fd6cc7b2e14d9fe64d449956c3a,
         type: 3}
       propertyPath: m_Text
@@ -2667,6 +2769,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Participant Card (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3761835183371981686, guid: af347fd6cc7b2e14d9fe64d449956c3a,
+        type: 3}
+      propertyPath: _syncMethod
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3974858948552350147, guid: af347fd6cc7b2e14d9fe64d449956c3a,
         type: 3}
@@ -2841,6 +2948,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3761835183371981686, guid: af347fd6cc7b2e14d9fe64d449956c3a,
+        type: 3}
+      propertyPath: _syncMethod
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4439435792711723073, guid: af347fd6cc7b2e14d9fe64d449956c3a,
         type: 3}
       propertyPath: m_Pivot.x
@@ -2997,6 +3109,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3761835183371981686, guid: af347fd6cc7b2e14d9fe64d449956c3a,
+        type: 3}
+      propertyPath: _syncMethod
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4439435792711723073, guid: af347fd6cc7b2e14d9fe64d449956c3a,
         type: 3}
@@ -3155,6 +3272,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3761835183371981686, guid: af347fd6cc7b2e14d9fe64d449956c3a,
+        type: 3}
+      propertyPath: _syncMethod
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4439435792711723073, guid: af347fd6cc7b2e14d9fe64d449956c3a,
         type: 3}
       propertyPath: m_Pivot.x
@@ -3311,6 +3433,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3761835183371981686, guid: af347fd6cc7b2e14d9fe64d449956c3a,
+        type: 3}
+      propertyPath: _syncMethod
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4439435792711723073, guid: af347fd6cc7b2e14d9fe64d449956c3a,
         type: 3}
@@ -3469,6 +3596,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3761835183371981686, guid: af347fd6cc7b2e14d9fe64d449956c3a,
+        type: 3}
+      propertyPath: _syncMethod
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4439435792711723073, guid: af347fd6cc7b2e14d9fe64d449956c3a,
         type: 3}
       propertyPath: m_Pivot.x
@@ -3625,6 +3757,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3761835183371981686, guid: af347fd6cc7b2e14d9fe64d449956c3a,
+        type: 3}
+      propertyPath: _syncMethod
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4439435792711723073, guid: af347fd6cc7b2e14d9fe64d449956c3a,
         type: 3}
