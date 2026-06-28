@@ -94,7 +94,7 @@ namespace CheeseSports
         static Transform FindLetter(char ch)
         {
             string target = ch.ToString().ToUpper();
-            var all = Object.FindObjectsByType<Transform>(FindObjectsInactive.Include);
+            var all = Object.FindObjectsByType<Transform>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             foreach (var t in all)
             {
                 // 이름이 "A:C" 처럼 접두사가 붙을 수 있어 ':' 뒤 부분으로 비교
