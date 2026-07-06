@@ -35,6 +35,9 @@ namespace CheeseSports
         bool wallL = true, wallR = true, wallB = true, wallF = false;
         bool assignImages = true;
         string imageFolder = "Assets/Props/PictureFrames/Images";
+        bool picRotate90 = false;   // 이미지가 90° 돌아있으면 체크
+        bool picFlipX = false;      // 이미지가 좌우 반전이면 체크(기본은 이미 교정됨)
+        bool fitFrameToImage = true; // 액자를 그림 종횡비에 맞춰 스케일
 
         const string RootName = "FrameGallery";
         const string MatFolder = "Assets/Props/PictureFrames/_FrameMats";
@@ -80,6 +83,9 @@ namespace CheeseSports
             {
                 imageFolder = EditorGUILayout.TextField("이미지 폴더", imageFolder);
                 EditorGUILayout.LabelField($"  찾은 이미지: {LoadImages().Count}개");
+                picRotate90 = EditorGUILayout.Toggle("이미지 90° 회전", picRotate90);
+                picFlipX = EditorGUILayout.Toggle("이미지 좌우 반전", picFlipX);
+                fitFrameToImage = EditorGUILayout.Toggle("액자를 그림 비율에 맞춤", fitFrameToImage);
             }
 
             EditorGUILayout.Space();
@@ -90,6 +96,37 @@ namespace CheeseSports
             if (GUILayout.Button("삭제", GUILayout.Height(36), GUILayout.Width(80))) Clear();
             GUI.backgroundColor = Color.white;
             EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.Space();
+            EditorGUILayout.HelpBox("특정 액자만 다른 방향으로: 씬에서 액자(Frame_…)를 고른 뒤 아래 버튼. 누를 때마다 90°씩 돌아갑니다(그림도 같이).", MessageType.None);
+            GUI.backgroundColor = new Color(0.7f, 0.85f, 1f);
+            if (GUILayout.Button("🔄 선택한 액자 90° 돌리기", GUILayout.Height(26))) RotateSelected90();
+            GUI.backgroundColor = Color.white;
+        }
+
+        // 씬에서 선택한 액자(들)의 "바라보는 방향"을 90° 회전 (짝 그림도 함께)
+        void RotateSelected90()
+        {
+            int n = 0;
+            foreach (var go in Selection.gameObjects)
+            {
+                var t = go.transform;
+                Vector3 pivot = t.position;
+                Undo.RecordObject(t, "Rotate Frame 90");
+                t.RotateAround(pivot, Vector3.up, 90f);
+
+                // 짝 그림(Frame_XX_Pic)도 같은 축으로 회전
+                Transform root = t.parent;
+                Transform pic = root != null ? root.Find(go.name + "_Pic") : null;
+                if (pic != null)
+                {
+                    Undo.RecordObject(pic, "Rotate Frame 90");
+                    pic.RotateAround(pivot, Vector3.up, 90f);
+                }
+                n++;
+            }
+            if (n == 0) Debug.LogWarning("씬에서 액자(Frame_…)를 선택한 뒤 눌러주세요.");
+            else { Dirty(); Debug.Log($"🔄 선택 액자 {n}개 90° 회전 완료."); }
         }
 
         void AutoBind()
@@ -215,15 +252,69 @@ namespace CheeseSports
                     var pp = FindPicturePlane(go);
                     if (pp != null)
                     {
-                        var mat = MatFor(images[gi % images.Count]);
-                        var arr = pp.sharedMaterials;
-                        for (int k = 0; k < arr.Length; k++) arr[k] = mat;
-                        pp.sharedMaterials = arr;
+                        var tex = images[gi % images.Count];
+                        if (fitFrameToImage) FitFrameToImage(go.transform, pp, tex);  // 액자를 그림 비율로
+                        PlacePicture(parent, go.transform, pp, tex, MatFor(tex));
+                        pp.enabled = false;   // 원본 유리(아틀라스 UV라 잘림/회전) 숨김
                     }
                 }
                 Undo.RegisterCreatedObjectUndo(go, "Frame");
                 gi++;
             }
+        }
+
+        // 유리 칸 자리에 "깨끗한 UV 평면(Quad)"을 새로 깔아 전체 이미지를 안 잘리고 표시.
+        // 개구부(유리 바운즈)에 이미지 비율 유지하며 맞추고, 90°회전/좌우반전 토글 반영.
+        void PlacePicture(Transform root, Transform frame, Renderer glass, Texture2D tex, Material mat)
+        {
+            Bounds b = glass.bounds;                    // 월드 AABB
+            Vector3 s = b.size;
+            float thick = Mathf.Min(s.x, Mathf.Min(s.y, s.z));
+            float openH = s.y;                          // 세로(위아래)
+            float openW = Mathf.Max(s.x, s.z);          // 가로(벽 방향)
+            if (openW < 1e-4f || openH < 1e-4f) return;
+
+            float aspect = (float)tex.width / Mathf.Max(1, tex.height);
+            if (picRotate90) aspect = 1f / aspect;      // 90° 돌면 표시 비율도 뒤집힘
+
+            // 개구부 안에 비율 유지하며 최대로 채우기
+            float w, h;
+            if (openW / openH > aspect) { h = openH; w = h * aspect; }
+            else { w = openW; h = w / aspect; }
+
+            // 90° 회전이면 쿼드를 법선축(Z) 기준 90° 돌리고, 회전 전 크기는 가로/세로 스왑
+            float quadW = picRotate90 ? h : w;
+            float quadH = picRotate90 ? w : h;
+            float zRot = picRotate90 ? 90f : 0f;
+
+            var q = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            q.name = frame.name + "_Pic";
+            var qc = q.GetComponent<Collider>(); if (qc != null) DestroyImmediate(qc);
+            q.transform.SetParent(root, true);          // 루트(스케일1)에 붙여 월드 크기 그대로
+            q.transform.rotation = frame.rotation * Quaternion.Euler(0f, 0f, zRot);
+            q.transform.position = b.center + frame.forward * (thick * 0.5f + 0.01f);
+            // 기본이 거울상이라 기본으로 뒤집어 교정. picFlipX 켜면 원래대로(반전).
+            float sx = picFlipX ? quadW : -quadW;
+            q.transform.localScale = new Vector3(sx, quadH, 1f);
+            q.GetComponent<Renderer>().sharedMaterial = mat;
+            Undo.RegisterCreatedObjectUndo(q, "Picture");
+        }
+
+        // 액자(프레임) 자체를 이미지 종횡비에 맞춰 가로 스케일 조정 → 그림이 액자에 꽉 참(레터박스 X)
+        void FitFrameToImage(Transform frame, Renderer glass, Texture2D tex)
+        {
+            Bounds gb = glass.bounds;
+            float curH = gb.size.y;
+            float curW = Mathf.Max(gb.size.x, gb.size.z);   // 벽 방향(가로) = 프레임 로컬 X
+            if (curW < 1e-4f || curH < 1e-4f) return;
+
+            float cur = curW / curH;
+            float tgt = (float)tex.width / Mathf.Max(1, tex.height);
+            if (picRotate90) tgt = 1f / tgt;
+
+            float fix = tgt / cur;
+            var ls = frame.localScale;
+            frame.localScale = new Vector3(ls.x * fix, ls.y, ls.z);   // 로컬 X만 조정
         }
 
         static Renderer FindPicturePlane(GameObject frameGo)
@@ -251,12 +342,22 @@ namespace CheeseSports
             var m = AssetDatabase.LoadAssetAtPath<Material>(path);
             if (m == null)
             {
-                var sh = Shader.Find("Unlit/Texture");
+                var sh = Shader.Find("Sprites/Default");   // 양면 렌더 + 조명 무관
+                if (sh == null) sh = Shader.Find("Unlit/Texture");
                 if (sh == null) sh = Shader.Find("Standard");
                 m = new Material(sh) { mainTexture = tex };
                 AssetDatabase.CreateAsset(m, path);
             }
-            else m.mainTexture = tex;
+            else
+            {
+                // 이전 방식(Unlit + 타일링/오프셋 변경)으로 만든 기존 mat 정상화
+                var sh = Shader.Find("Sprites/Default");
+                if (sh != null && m.shader != sh) m.shader = sh;
+                m.mainTexture = tex;
+                m.mainTextureScale = Vector2.one;
+                m.mainTextureOffset = Vector2.zero;
+                EditorUtility.SetDirty(m);
+            }
             _cache[tex.name] = m;
             return m;
         }
