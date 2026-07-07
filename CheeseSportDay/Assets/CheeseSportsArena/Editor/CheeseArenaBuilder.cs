@@ -29,7 +29,8 @@ namespace CheeseSports
         float rowDepth = 1.9f;
         float rowStep = 0.55f;      // 한 행 올라갈 때 높이
         float aisleHalf = 1.6f;     // 가운데 통로 반폭
-        float audienceFrontZ = 6f;  // 맨 앞열 z (스테이지 앞)
+        float audienceFrontZ = 6f;  // 맨 앞열 z (스테이지 앞) — Build에서 stageGap로 계산됨
+        float stageGap = 6f;        // 무대 앞 ↔ 첫 관중 열 사이 빈 거리(세로 깊이)
 
         // 스테이지
         float stageFrontZ = 8f;
@@ -50,6 +51,12 @@ namespace CheeseSports
         bool buildWalls = true;
         bool buildCeiling = true;
         bool buildLights = true;
+        float originOffsetZ = -50f;   // 원점에서 Z로 밀기(마이너스 = 뒤로)
+
+        // 관중석 의자: 진짜 모델(RingChair)로 채움. 없으면 기본 박스로 폴백.
+        GameObject audienceChair;
+        float audChairSize = 1.3f;      // 관중 의자 크기(m)
+        float audChairCorrX = -90f;     // 의자 세우기 보정(이 모델은 X-90)
 
         const string RootName = "CheeseSportsArena";
         const string MatFolder = "Assets/CheeseSportsArena/Materials";
@@ -63,6 +70,13 @@ namespace CheeseSports
             w.minSize = new Vector2(320, 540);
         }
 
+        // 원클릭용: 창 안 열고 기본값으로 맵 생성
+        public static void BuildDefault()
+        {
+            var w = CreateInstance<CheeseArenaBuilder>();
+            try { w.Build(); } finally { DestroyImmediate(w); }
+        }
+
         void OnGUI()
         {
             EditorGUILayout.LabelField("🧀 치즈 운동회 (오디토리움)", EditorStyles.boldLabel);
@@ -74,13 +88,19 @@ namespace CheeseSports
             audRows = EditorGUILayout.IntSlider("세로(행) / 블록", audRows, 1, 8);
             seatSpacingX = EditorGUILayout.Slider("좌석 가로 간격", seatSpacingX, 1.1f, 2.2f);
             rowDepth = EditorGUILayout.Slider("행 간격", rowDepth, 1.4f, 3f);
+            audChairSize = EditorGUILayout.Slider("관중 의자 크기(모델)", audChairSize, 0.4f, 3f);
+            audChairCorrX = EditorGUILayout.Slider("의자 세우기 X보정", audChairCorrX, -180f, 180f);
             rowStep = EditorGUILayout.Slider("행 단 높이", rowStep, 0.2f, 1.0f);
             aisleHalf = EditorGUILayout.Slider("가운데 통로 반폭", aisleHalf, 0.8f, 4f);
+            stageGap = EditorGUILayout.Slider("무대~관중 거리(세로)", stageGap, 2f, 25f);
 
             EditorGUILayout.Space();
             buildWalls = EditorGUILayout.Toggle("벽", buildWalls);
             buildCeiling = EditorGUILayout.Toggle("천장+트러스", buildCeiling);
             buildLights = EditorGUILayout.Toggle("조명", buildLights);
+
+            EditorGUILayout.Space();
+            originOffsetZ = EditorGUILayout.Slider("원점에서 Z 오프셋(뒤로)", originOffsetZ, -400f, 20f);
 
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();
@@ -110,6 +130,11 @@ namespace CheeseSports
             var root = new GameObject(RootName);
             Undo.RegisterCreatedObjectUndo(root, "Build Cheese Auditorium");
             var T = root.transform;
+            T.position = new Vector3(0f, 0f, originOffsetZ);   // 원점에서 Z로 밀기
+
+            // 무대~관중 거리(세로 깊이): 관중 앞열을 무대에서 stageGap만큼 뒤로, 뒤 벽도 자동 확장
+            audienceFrontZ = stageFrontZ - stageGap;
+            roomBackZ = audienceFrontZ - audRows * rowDepth - 3.5f;
 
             BuildShell(T);
             BuildStage(T);
@@ -180,6 +205,7 @@ namespace CheeseSports
             var seatMat = Mat("AudienceSeat", new Color(0.20f, 0.62f, 0.92f));
             var accent = Mat("Accent", new Color(0.16f, 0.16f, 0.23f));
             var stepMat = Mat("Step", new Color(0.90f, 0.90f, 0.88f));
+            if (audienceChair == null) audienceChair = FindModel("Props/RingChair");   // 관중석 의자 모델
 
             int seatNo = 0;
             // side: -1 = 좌, +1 = 우
@@ -197,7 +223,7 @@ namespace CheeseSports
                         if (y > 0.05f)
                             Box(aud, $"Riser_{s}_{r}_{c}", new Vector3(x, y * 0.5f, z),
                                 new Vector3(seatSpacingX * 1.02f, y, rowDepth * 0.98f), stepMat);
-                        BuildChair(aud, $"Seat_{++seatNo}", pos, seatMat, accent, 1f);
+                        PlaceAudienceSeat(aud, $"Seat_{++seatNo}", pos, seatMat, accent);
                     }
                 }
             }
@@ -258,6 +284,58 @@ namespace CheeseSports
             Box(root, "Back", new Vector3(0, 0.78f * k, -0.22f * k), new Vector3(0.55f * k, 0.5f * k, 0.1f * k), seatMat);
             Box(root, "Pedestal", new Vector3(0, 0.22f * k, 0), new Vector3(0.18f * k, 0.45f * k, 0.18f * k), accentMat);
             return root;
+        }
+
+        // 관중석 한 자리: 관중석 의자 모델(RingChair)로. 모델 없으면 기본 박스로 폴백.
+        void PlaceAudienceSeat(Transform parent, string name, Vector3 pos, Material seatMat, Material accentMat)
+        {
+            if (audienceChair == null) { BuildChair(parent, name, pos, seatMat, accentMat, 1f); return; }
+
+            // 무대(FocusPoint)를 바라보는 피벗 + 그 아래 세워진 의자
+            var pivot = new GameObject(name).transform;
+            pivot.SetParent(parent, false);
+            pivot.localPosition = pos;
+            Vector3 dir = FocusPoint - pos; dir.y = 0;
+            if (dir.sqrMagnitude > 0.001f) pivot.localRotation = Quaternion.LookRotation(dir, Vector3.up);
+
+            var chair = PrefabUtility.InstantiatePrefab(audienceChair) as GameObject;
+            if (chair == null) chair = Instantiate(audienceChair);
+            chair.name = "Chair";
+            chair.transform.SetParent(pivot, false);
+            chair.transform.localPosition = Vector3.zero;
+            chair.transform.localRotation = Quaternion.Euler(audChairCorrX, 0f, 0f);   // 세우기 보정
+
+            // 크기 맞춤(가로 기준) + 바닥 안착
+            Bounds b = GetBounds(chair);
+            float d = Mathf.Max(b.size.x, b.size.z);
+            if (d > 0.0001f) chair.transform.localScale *= (audChairSize / d);
+            b = GetBounds(chair);
+            chair.transform.position += new Vector3(0, pivot.position.y - b.min.y, 0);
+
+            Undo.RegisterCreatedObjectUndo(pivot.gameObject, "Audience Seat");
+        }
+
+        static GameObject FindModel(string key)
+        {
+            foreach (var guid in AssetDatabase.FindAssets("t:GameObject"))
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid).Replace('\\', '/');
+                if (path.Contains(key))
+                {
+                    var go = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                    if (go != null) return go;
+                }
+            }
+            return null;
+        }
+
+        static Bounds GetBounds(GameObject go)
+        {
+            var rends = go.GetComponentsInChildren<Renderer>();
+            if (rends.Length == 0) return new Bounds(go.transform.position, Vector3.one);
+            Bounds b = rends[0].bounds;
+            for (int i = 1; i < rends.Length; i++) b.Encapsulate(rends[i].bounds);
+            return b;
         }
 
         // =========================================================

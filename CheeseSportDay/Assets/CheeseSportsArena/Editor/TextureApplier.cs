@@ -31,16 +31,25 @@ namespace CheeseSports
             "albedo", "basecolor", "base_color", "base", "color", "diffuse", "bake", "estofado", "tx_", "tx"
         };
 
+        // 원클릭용 진입점
+        public static void RunDefault() => Apply();
+
         [MenuItem("Tools/🧀 치즈 운동회/텍스처 자동 입히기")]
         static void Apply()
         {
-            var root = GameObject.Find("CheeseDecor");
-            if (root == null) { Debug.LogWarning("CheeseDecor 가 없어요 — 먼저 [소품 배치기]로 배치하세요."); return; }
+            var roots = new List<GameObject>();
+            foreach (var rn in new[] { "CheeseDecor", "CheeseSportsArena" })
+            {
+                var g = GameObject.Find(rn);
+                if (g != null) roots.Add(g);
+            }
+            if (roots.Count == 0) { Debug.LogWarning("CheeseDecor / CheeseSportsArena 가 없어요 — 먼저 배치/생성하세요."); return; }
 
             EnsureFolder(MatFolder);
             var cache = new Dictionary<string, Material>();
             int applied = 0, skipped = 0;
 
+            foreach (var root in roots)
             foreach (var r in root.GetComponentsInChildren<Renderer>(true))
             {
                 if (IsWindowMesh(r.gameObject))   // ★ 알려진 창문 메쉬(polySurface4) → 창문 머티리얼 자동

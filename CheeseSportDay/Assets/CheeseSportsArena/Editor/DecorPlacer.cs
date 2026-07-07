@@ -25,9 +25,10 @@ namespace CheeseSports
 
         // 갤러리 홀(별관) — 원점에서 떨어뜨려 배치
         float hallSize = 31f;           // 홀 목표 가로폭(m)
-        float hallOffsetX = 40f;        // 원점에서 X 오프셋
+        float hallOffsetX = 55f;        // 원점에서 X 오프셋(오른쪽)
         float hallOffsetZ = 0f;         // 원점에서 Z 오프셋
         float hallRotX = -90f, hallRotY = 0f, hallRotZ = 0f;  // 홀 눕히기(GLB라 서있으면 X -90)
+        bool hallFloor = true;          // 홀 바닥 구멍 메꾸기(발자국 전체 바닥 슬래브)
 
         // 관중석 (가운데 단일 블록) — 기본값 확정
         int audCols = 5, audRows = 4;
@@ -55,6 +56,13 @@ namespace CheeseSports
         {
             var w = GetWindow<DecorPlacer>("🧀 소품 배치기");
             w.minSize = new Vector2(340, 540);
+        }
+
+        // 원클릭용: 창 안 열고 자동 연결 후 기본값으로 배치
+        public static void BuildDefault()
+        {
+            var w = CreateInstance<DecorPlacer>();
+            try { w.AutoBind(); w.Place(); } finally { DestroyImmediate(w); }
         }
 
         void OnGUI()
@@ -87,6 +95,7 @@ namespace CheeseSports
             hallRotX = EditorGUILayout.Slider("홀 X 회전", hallRotX, -180f, 180f);
             hallRotY = EditorGUILayout.Slider("홀 Y 회전", hallRotY, -180f, 180f);
             hallRotZ = EditorGUILayout.Slider("홀 Z 회전", hallRotZ, -180f, 180f);
+            hallFloor = EditorGUILayout.Toggle("홀 바닥 구멍 메꾸기", hallFloor);
 
             EditorGUILayout.LabelField("관중석 (가운데 단일 블록)", EditorStyles.boldLabel);
             audCols = EditorGUILayout.IntSlider("열(가로)", audCols, 1, 10);
@@ -236,6 +245,21 @@ namespace CheeseSports
                 if (hb.size.x > 0.0001f) hall.transform.localScale *= (hallSize / hb.size.x);
                 hb = GetBounds(hall);
                 hall.transform.position += new Vector3(hallOffsetX - hb.center.x, -hb.min.y, hallOffsetZ - hb.center.z);
+
+                // 홀 바닥 구멍 메꾸기: 발자국 전체에 바닥 슬래브(기존 바닥보다 2cm 아래 → z-파이팅 없음)
+                if (hallFloor)
+                {
+                    Bounds fb = GetBounds(hall);
+                    var floor = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    floor.name = "HallFloor";
+                    floor.transform.SetParent(T, false);
+                    float topY = fb.min.y - 0.02f, thick = 0.2f;
+                    floor.transform.position = new Vector3(fb.center.x, topY - thick * 0.5f, fb.center.z);
+                    floor.transform.localScale = new Vector3(fb.size.x, thick, fb.size.z);
+                    var fr = floor.GetComponent<Renderer>();
+                    if (fr != null) fr.sharedMaterial = new Material(Shader.Find("Standard")) { color = new Color(0.93f, 0.93f, 0.91f) };
+                    Undo.RegisterCreatedObjectUndo(floor, "Hall Floor");
+                }
             }
 
             Selection.activeGameObject = root;
