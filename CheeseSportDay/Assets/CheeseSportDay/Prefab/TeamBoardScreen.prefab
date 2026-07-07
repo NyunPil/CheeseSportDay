@@ -60,7 +60,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -240,7 +240,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.15294118, g: 0.49019608, b: 0.6313726, a: 1}
+  m_Color: {r: 1, g: 0.81960785, b: 0.38039216, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -342,7 +342,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "C\uD300"
+  m_text: "\uACAC\uACFC\uB958\uD300"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8c904013134d2134281a98eb616c6f34, type: 2}
   m_sharedMaterial: {fileID: 7334966014800829527, guid: 8c904013134d2134281a98eb616c6f34,
@@ -365,7 +365,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -479,7 +479,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.4882353, g: 0.39019608, b: 0.15490197, a: 1}
+  m_Color: {r: 0.031327877, g: 0.18471037, b: 0.6037736, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -638,7 +638,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9764706, g: 0.78039217, b: 0.30980393, a: 1}
+  m_Color: {r: 0.0627451, g: 0.27058825, b: 0.87058824, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -742,7 +742,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.13137256, g: 0.33333334, b: 0.27254903, a: 1}
+  m_Color: {r: 0, g: 0.2924528, b: 0.050661094, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -983,7 +983,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "A\uD300"
+  m_text: "\uAE34\uC5F4\uBB34\uD300"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8c904013134d2134281a98eb616c6f34, type: 2}
   m_sharedMaterial: {fileID: 7334966014800829527, guid: 8c904013134d2134281a98eb616c6f34,
@@ -1006,7 +1006,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -1118,7 +1118,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "D\uD300"
+  m_text: "\uAE40\uBBFC\uC815\uD300"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8c904013134d2134281a98eb616c6f34, type: 2}
   m_sharedMaterial: {fileID: 7334966014800829527, guid: 8c904013134d2134281a98eb616c6f34,
@@ -1128,7 +1128,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4278190080
   m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -1141,7 +1141,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -1248,7 +1248,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9019608, g: 0.22352941, b: 0.27450982, a: 1}
+  m_Color: {r: 0.7058824, g: 0.09803922, b: 0.09803922, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1345,7 +1345,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.2627451, g: 0.6666667, b: 0.54509807, a: 1}
+  m_Color: {r: 0.003921569, g: 0.49803922, b: 0.09803922, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1449,7 +1449,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.07647059, g: 0.24509804, b: 0.3156863, a: 1}
+  m_Color: {r: 0.754717, g: 0.61361617, b: 0.26699895, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1779,7 +1779,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "B\uD300"
+  m_text: "\uAE40\uB0B4\uC77C\uD300"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8c904013134d2134281a98eb616c6f34, type: 2}
   m_sharedMaterial: {fileID: 7334966014800829527, guid: 8c904013134d2134281a98eb616c6f34,
@@ -1802,7 +1802,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -2078,6 +2078,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 781379548878563254, guid: b79e623e640376749a5a0c80b299b2a5,
         type: 3}
+    - target: {fileID: 3947454492620214617, guid: b79e623e640376749a5a0c80b299b2a5,
+        type: 3}
+      propertyPath: m_text
+      value: "\uAE40\uBBFC\uC815"
+      objectReference: {fileID: 0}
+    - target: {fileID: 3947454492620214617, guid: b79e623e640376749a5a0c80b299b2a5,
+        type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
+      objectReference: {fileID: 0}
     - target: {fileID: 4618502720609619117, guid: b79e623e640376749a5a0c80b299b2a5,
         type: 3}
       propertyPath: m_Pivot.x
@@ -2178,6 +2188,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5470037143496778682, guid: b79e623e640376749a5a0c80b299b2a5,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 89325bfa3c5ffa54892baf45cab0d45b,
+        type: 3}
     - target: {fileID: 8791389211481092057, guid: b79e623e640376749a5a0c80b299b2a5,
         type: 3}
       propertyPath: m_Name
@@ -2325,6 +2341,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TeamMember (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 8791389211481092057, guid: b79e623e640376749a5a0c80b299b2a5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2466,6 +2487,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TeamMember (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8791389211481092057, guid: b79e623e640376749a5a0c80b299b2a5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2609,6 +2635,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TeamMember (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 8791389211481092057, guid: b79e623e640376749a5a0c80b299b2a5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2751,6 +2782,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TeamMember (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 8791389211481092057, guid: b79e623e640376749a5a0c80b299b2a5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2788,6 +2824,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 781379548878563254, guid: b79e623e640376749a5a0c80b299b2a5,
         type: 3}
+    - target: {fileID: 3947454492620214617, guid: b79e623e640376749a5a0c80b299b2a5,
+        type: 3}
+      propertyPath: m_text
+      value: "\uACAC\uACFC\uB958"
+      objectReference: {fileID: 0}
+    - target: {fileID: 3947454492620214617, guid: b79e623e640376749a5a0c80b299b2a5,
+        type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
+      objectReference: {fileID: 0}
     - target: {fileID: 4618502720609619117, guid: b79e623e640376749a5a0c80b299b2a5,
         type: 3}
       propertyPath: m_Pivot.x
@@ -2888,6 +2934,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5470037143496778682, guid: b79e623e640376749a5a0c80b299b2a5,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: af05be97233bf4642bd01b9a93e6ec7d,
+        type: 3}
     - target: {fileID: 8791389211481092057, guid: b79e623e640376749a5a0c80b299b2a5,
         type: 3}
       propertyPath: m_Name
@@ -3035,6 +3087,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TeamMember (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 8791389211481092057, guid: b79e623e640376749a5a0c80b299b2a5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3176,6 +3233,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TeamMember (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8791389211481092057, guid: b79e623e640376749a5a0c80b299b2a5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3319,6 +3381,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TeamMember (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 8791389211481092057, guid: b79e623e640376749a5a0c80b299b2a5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3460,6 +3527,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TeamMember (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8791389211481092057, guid: b79e623e640376749a5a0c80b299b2a5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3603,6 +3675,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TeamMember (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 8791389211481092057, guid: b79e623e640376749a5a0c80b299b2a5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3744,6 +3821,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TeamMember (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8791389211481092057, guid: b79e623e640376749a5a0c80b299b2a5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3887,6 +3969,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TeamMember (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 8791389211481092057, guid: b79e623e640376749a5a0c80b299b2a5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3924,6 +4011,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 781379548878563254, guid: b79e623e640376749a5a0c80b299b2a5,
         type: 3}
+    - target: {fileID: 3947454492620214617, guid: b79e623e640376749a5a0c80b299b2a5,
+        type: 3}
+      propertyPath: m_text
+      value: "\uAE40\uB0B4\uC77C"
+      objectReference: {fileID: 0}
+    - target: {fileID: 3947454492620214617, guid: b79e623e640376749a5a0c80b299b2a5,
+        type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
+      objectReference: {fileID: 0}
     - target: {fileID: 4618502720609619117, guid: b79e623e640376749a5a0c80b299b2a5,
         type: 3}
       propertyPath: m_Pivot.x
@@ -4024,6 +4121,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5470037143496778682, guid: b79e623e640376749a5a0c80b299b2a5,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 96554a526b80aa34fbc1e7255286f1c7,
+        type: 3}
     - target: {fileID: 8791389211481092057, guid: b79e623e640376749a5a0c80b299b2a5,
         type: 3}
       propertyPath: m_Name
@@ -4171,6 +4274,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TeamMember (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 8791389211481092057, guid: b79e623e640376749a5a0c80b299b2a5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4312,6 +4420,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TeamMember (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8791389211481092057, guid: b79e623e640376749a5a0c80b299b2a5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4455,6 +4568,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TeamMember (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 8791389211481092057, guid: b79e623e640376749a5a0c80b299b2a5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4597,6 +4715,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TeamMember (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 8791389211481092057, guid: b79e623e640376749a5a0c80b299b2a5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4634,6 +4757,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 781379548878563254, guid: b79e623e640376749a5a0c80b299b2a5,
         type: 3}
+    - target: {fileID: 3947454492620214617, guid: b79e623e640376749a5a0c80b299b2a5,
+        type: 3}
+      propertyPath: m_text
+      value: "\uAE34\uC5F4\uBB34"
+      objectReference: {fileID: 0}
+    - target: {fileID: 3947454492620214617, guid: b79e623e640376749a5a0c80b299b2a5,
+        type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
+      objectReference: {fileID: 0}
     - target: {fileID: 4618502720609619117, guid: b79e623e640376749a5a0c80b299b2a5,
         type: 3}
       propertyPath: m_Pivot.x
@@ -4734,6 +4867,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5470037143496778682, guid: b79e623e640376749a5a0c80b299b2a5,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 798cc004f48023146b2744777f7f2225,
+        type: 3}
     - target: {fileID: 8791389211481092057, guid: b79e623e640376749a5a0c80b299b2a5,
         type: 3}
       propertyPath: m_Name
@@ -4880,6 +5019,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TeamMember (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8791389211481092057, guid: b79e623e640376749a5a0c80b299b2a5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
