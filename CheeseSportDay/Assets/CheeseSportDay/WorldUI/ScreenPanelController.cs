@@ -74,11 +74,6 @@ namespace CheeseSportDay.WorldUI
 
         private void ApplyVisibility()
         {
-            if (idleView != null)
-            {
-                idleView.SetActive(!activeViewVisible);
-            }
-
             if (activeView != null)
             {
                 activeView.SetActive(activeViewVisible);

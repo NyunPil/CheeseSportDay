@@ -36,7 +36,7 @@ namespace CheeseSportDay.WorldUI
             screenController.nowCounterCaptain = captainName;
 
             screenController.ToggleActiveView();
-            screenController.countText.text = $"»¯ ¾î ¿À ±â!\n{captainName}";
+            screenController.countText.text = $"{captainName}";
         }
     }
 }
