@@ -1,4 +1,5 @@
 using UdonSharp;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +12,8 @@ namespace CheeseSportDay.WorldUI
         [Header("View")]
         public Image backgroundImage;
         public Image portraitImage;
-        public Text nameText;
+        public TextMeshProUGUI nameText;
+        public GameObject selectSuccessObj;
 
         [HideInInspector]
         public ParticipantRosterScreen rosterScreen;
@@ -30,7 +32,7 @@ namespace CheeseSportDay.WorldUI
             participantIndex = index;
         }
 
-        public void SetContent(string displayName, Sprite portrait, bool isSelected, Color normalColor, Color selectedColor)
+        public void SetContent(string displayName, Sprite portrait, Color cardColor, bool isAssigned)
         {
             if (nameText != null)
             {
@@ -45,7 +47,12 @@ namespace CheeseSportDay.WorldUI
 
             if (backgroundImage != null)
             {
-                backgroundImage.color = isSelected ? selectedColor : normalColor;
+                backgroundImage.color = cardColor;
+            }
+
+            if (selectSuccessObj != null)
+            {
+                selectSuccessObj.SetActive(isAssigned);
             }
         }
 

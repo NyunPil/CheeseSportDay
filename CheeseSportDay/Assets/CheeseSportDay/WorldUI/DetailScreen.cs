@@ -1,5 +1,6 @@
-﻿
+
 using UdonSharp;
+using TMPro;
 using UnityEngine;
 using VRC.SDKBase;
 using VRC.Udon;
@@ -11,14 +12,14 @@ public class DetailScreen : UdonSharpBehaviour
     [Header("Detail")]
     public GameObject detailRoot;
     public Image detailPortraitImage;
-    public Text detailNameText;
-    public Text detailTitleText;
-    public Text detailBodyText;
-    public Text gameSkillText;
-    public Text gameSenseText;
-    public Text teamworkText;
-    public Text physicalText;
-    public Text luckText;
+    public TextMeshProUGUI detailNameText;
+    public TextMeshProUGUI detailTitleText;
+    public TextMeshProUGUI detailBodyText;
+    public TextMeshProUGUI gameSkillText;
+    public TextMeshProUGUI gameSenseText;
+    public TextMeshProUGUI teamworkText;
+    public TextMeshProUGUI physicalText;
+    public TextMeshProUGUI luckText;
 
     [Header("Labels")]
     public string gameSkillLabel = "Skill";
@@ -58,7 +59,7 @@ public class DetailScreen : UdonSharpBehaviour
         SetStatText(luckText, luckLabel, value5);
     }
 
-    private void SetStatText(Text target, string label, int value)
+    private void SetStatText(TextMeshProUGUI target, string label, int value)
     {
         if (target != null)
         {

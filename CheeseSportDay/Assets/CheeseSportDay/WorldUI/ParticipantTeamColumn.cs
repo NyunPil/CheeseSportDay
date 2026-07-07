@@ -1,4 +1,5 @@
 using UdonSharp;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +10,7 @@ namespace CheeseSportDay.WorldUI
     public class ParticipantTeamColumn : UdonSharpBehaviour
     {
         public Image teamColorImage;
-        public Text teamNameText;
+        public TextMeshProUGUI teamNameText;
         public MemberCard[] members;
 
         public int GetMemberCapacity()

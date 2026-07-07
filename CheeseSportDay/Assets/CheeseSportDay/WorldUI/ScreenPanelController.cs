@@ -1,6 +1,6 @@
 using UdonSharp;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using VRC.SDKBase;
 
 namespace CheeseSportDay.WorldUI
@@ -21,8 +21,8 @@ namespace CheeseSportDay.WorldUI
         [Tooltip("When enabled, one player's button press updates the screen for everyone.")]
         public bool syncForEveryone = true;
 
-        [Header("д╚©Нем")]
-        public Text countText;
+        [Header("д╚О©╫О©╫О©╫О©╫")]
+        public TextMeshProUGUI countText;
         public string nowCounterCaptain;
 
         [UdonSynced]

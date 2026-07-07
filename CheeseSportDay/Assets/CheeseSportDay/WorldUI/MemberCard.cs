@@ -1,5 +1,6 @@
-﻿
+
 using UdonSharp;
+using TMPro;
 using UnityEngine;
 using VRC.SDKBase;
 using VRC.Udon;
@@ -9,7 +10,7 @@ public class MemberCard : UdonSharpBehaviour
 {
     public GameObject memberRoots;
     public Image memberPortraitImages;
-    public Text memberNameTexts;
+    public TextMeshProUGUI memberNameTexts;
 
     public void UpdateCrad(string memberName, Sprite portrait)
     {
