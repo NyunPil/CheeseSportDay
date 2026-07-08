@@ -499,7 +499,7 @@ PrefabInstance:
     - target: {fileID: 4676639397245612590, guid: 6e357cbcff78db149b9c0a91597e1531,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 1320
+      value: 690
       objectReference: {fileID: 0}
     - target: {fileID: 4676639397245612590, guid: 6e357cbcff78db149b9c0a91597e1531,
         type: 3}
@@ -1196,6 +1196,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1774043133805203129, guid: 4534d9a380829b94aae4ddd2dd086cb1,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3.0493963
       objectReference: {fileID: 0}
     - target: {fileID: 1786094905687982646, guid: 4534d9a380829b94aae4ddd2dd086cb1,
         type: 3}
