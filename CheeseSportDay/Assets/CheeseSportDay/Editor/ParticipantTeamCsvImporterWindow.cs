@@ -178,7 +178,14 @@ namespace CheeseSportDay.Editor
                 board.participantTeamIndices[i] = -1;
             }
 
-            board.RefreshAllViews();
+            if (rosterScreen != null && rosterScreen.detailRoot != null)
+            {
+                ParticipantTeamSetupMenu.RebuildTeamPresentation(rosterScreen);
+            }
+            else
+            {
+                board.RefreshAllViews();
+            }
 
             EditorUtility.SetDirty(board);
             PrefabUtility.RecordPrefabInstancePropertyModifications(board);
@@ -211,6 +218,11 @@ namespace CheeseSportDay.Editor
 
             WorldScreenButton[] buttons = rosterScreen.teamButtons;
             int buttonCount = buttons == null ? 0 : buttons.Length;
+
+            if (buttonCount == 0)
+            {
+                return;
+            }
 
             if (buttonCount < captainNames.Count)
             {

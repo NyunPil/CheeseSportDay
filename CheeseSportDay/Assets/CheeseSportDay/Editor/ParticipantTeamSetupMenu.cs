@@ -129,15 +129,20 @@ namespace CheeseSportDay.Editor
             EnsureTeamProgramAssets();
 
             Undo.RecordObject(roster, "Rebuild Participant Team UI");
+            Undo.RecordObject(roster.detailRoot, "Rebuild Participant Team UI");
             Undo.RecordObject(roster.teamBoardScreen, "Rebuild Participant Team Board");
 
+            TextMeshProUGUI currentTeamText = CreateOrConfigureTeamControls(roster);
+            roster.detailRoot.currentTeamText = currentTeamText;
             RebuildTeamBoardColumns(roster.teamBoardScreen);
             roster.teamBoardScreen.rosterScreen = roster;
             roster.teamBoardScreen.RefreshAllViews();
 
             EditorUtility.SetDirty(roster);
+            EditorUtility.SetDirty(roster.detailRoot);
             EditorUtility.SetDirty(roster.teamBoardScreen);
             PrefabUtility.RecordPrefabInstancePropertyModifications(roster);
+            PrefabUtility.RecordPrefabInstancePropertyModifications(roster.detailRoot);
             PrefabUtility.RecordPrefabInstancePropertyModifications(roster.teamBoardScreen);
             AssetDatabase.SaveAssets();
         }
