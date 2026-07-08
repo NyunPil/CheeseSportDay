@@ -120,6 +120,9 @@ MonoBehaviour:
   teamworkText: {fileID: 6396035460695896283}
   physicalText: {fileID: 1916258798887657392}
   luckText: {fileID: 5740242209253035174}
+  currentTeamText: {fileID: 7696907243762527598}
+  currentTeamLabel: "\uD300"
+  unassignedTeamLabel: "\uBBF8\uBC30\uC815"
   gameSkillLabel: "\uC774\uD574\uB3C4"
   gameSenseLabel: "\uC13C\uC2A4"
   teamworkLabel: "\uD300\uC6CC\uD06C"

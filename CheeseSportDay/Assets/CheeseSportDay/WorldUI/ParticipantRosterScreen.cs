@@ -172,7 +172,7 @@ namespace CheeseSportDay.WorldUI
         {
             bool hasSelection = selectedIndex >= 0 && selectedIndex < GetParticipantCount();
 
-            if (!hasSelection)
+            if (!hasSelection || detailRoot == null)
             {
                 return;
             }
@@ -187,6 +187,16 @@ namespace CheeseSportDay.WorldUI
                 GetInt(physicalValues, selectedIndex),
                 GetInt(luckValues, selectedIndex)
                 );
+
+            int teamIndex = teamBoardScreen == null
+                ? -1
+                : teamBoardScreen.GetParticipantTeam(selectedIndex);
+            string teamName = teamBoardScreen != null
+                && teamIndex >= 0
+                && teamIndex < teamBoardScreen.GetTeamCount()
+                    ? teamBoardScreen.GetTeamName(teamIndex)
+                    : "";
+            detailRoot.RefreshTeam(teamName);
 
             detailRoot.gameObject.SetActive(true);
         }

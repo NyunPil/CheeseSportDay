@@ -4,7 +4,6 @@ using TMPro;
 using UnityEngine;
 using VRC.SDKBase;
 using VRC.Udon;
-using UnityEngine;
 using UnityEngine.UI;
 
 public class DetailScreen : UdonSharpBehaviour
@@ -20,6 +19,11 @@ public class DetailScreen : UdonSharpBehaviour
     public TextMeshProUGUI teamworkText;
     public TextMeshProUGUI physicalText;
     public TextMeshProUGUI luckText;
+
+    [Header("Team")]
+    public TextMeshProUGUI currentTeamText;
+    public string currentTeamLabel = "\uD300";
+    public string unassignedTeamLabel = "\uBBF8\uBC30\uC815";
 
     [Header("Labels")]
     public string gameSkillLabel = "Skill";
@@ -57,6 +61,17 @@ public class DetailScreen : UdonSharpBehaviour
         SetStatText(teamworkText, teamworkLabel, value3);
         SetStatText(physicalText, physicalLabel, value4);
         SetStatText(luckText, luckLabel, value5);
+    }
+
+    public void RefreshTeam(string teamName)
+    {
+        if (currentTeamText == null)
+        {
+            return;
+        }
+
+        string value = string.IsNullOrEmpty(teamName) ? unassignedTeamLabel : teamName;
+        currentTeamText.text = currentTeamLabel + ": " + value;
     }
 
     private void SetStatText(TextMeshProUGUI target, string label, int value)
