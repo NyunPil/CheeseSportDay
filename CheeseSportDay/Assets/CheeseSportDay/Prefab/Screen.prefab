@@ -304,26 +304,6 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 2832329048656223812, guid: 6e357cbcff78db149b9c0a91597e1531,
         type: 3}
-      propertyPath: teamColumns.Array.data[0]
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2832329048656223812, guid: 6e357cbcff78db149b9c0a91597e1531,
-        type: 3}
-      propertyPath: teamColumns.Array.data[1]
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2832329048656223812, guid: 6e357cbcff78db149b9c0a91597e1531,
-        type: 3}
-      propertyPath: teamColumns.Array.data[2]
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2832329048656223812, guid: 6e357cbcff78db149b9c0a91597e1531,
-        type: 3}
-      propertyPath: teamColumns.Array.data[3]
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2832329048656223812, guid: 6e357cbcff78db149b9c0a91597e1531,
-        type: 3}
       propertyPath: teamColors.Array.data[0].b
       value: 0.09803922
       objectReference: {fileID: 0}
