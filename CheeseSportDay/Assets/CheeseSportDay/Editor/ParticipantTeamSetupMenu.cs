@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using CheeseSportDay.WorldUI;
+using TMPro;
 using UdonSharp;
 using UdonSharp.Compiler;
 using UnityEditor;
@@ -178,7 +179,7 @@ namespace CheeseSportDay.Editor
             return true;
         }
 
-        private static Text CreateOrConfigureTeamControls(ParticipantRosterScreen roster)
+        private static TextMeshProUGUI CreateOrConfigureTeamControls(ParticipantRosterScreen roster)
         {
             RectTransform detailRect = roster.detailRoot.GetComponent<RectTransform>();
             Transform existing = detailRect.Find("Team Assignment");
@@ -215,7 +216,7 @@ namespace CheeseSportDay.Editor
             int rowCount = Mathf.Max(1, (buttonCount + 2) / 3);
             controlsRect.sizeDelta = new Vector2(300f, 55f + rowCount * 40f);
 
-            Text currentTeamText = GetOrCreateText(
+            TextMeshProUGUI currentTeamText = GetOrCreateText(
                 controlsRect,
                 "Current Team",
                 "팀: 미배정",
@@ -223,7 +224,7 @@ namespace CheeseSportDay.Editor
                 new Vector2(0f, 38f),
                 new Vector2(280f, 28f),
                 new Color(0.08f, 0.08f, 0.08f, 1f),
-                TextAnchor.MiddleCenter);
+                TextAlignmentOptions.Center);
 
             for (int teamIndex = 0; teamIndex < teamCount; teamIndex++)
             {
@@ -280,7 +281,7 @@ namespace CheeseSportDay.Editor
                 Vector2.zero,
                 new Vector2(82f, 30f),
                 textColor,
-                TextAnchor.MiddleCenter);
+                TextAlignmentOptions.Center);
         }
 
         private static ParticipantTeamBoardScreen CreateTeamBoardScreen(ParticipantRosterScreen roster)
@@ -327,7 +328,7 @@ namespace CheeseSportDay.Editor
             }
 
             GetOrCreateImage(rootRect, "Background", Vector2.zero, new Vector2(700f, 600f), new Color(0.07f, 0.08f, 0.1f, 1f));
-            GetOrCreateText(rootRect, "Title", "팀 현황", 34, new Vector2(0f, 255f), new Vector2(640f, 55f), Color.white, TextAnchor.MiddleCenter);
+            GetOrCreateText(rootRect, "Title", "팀 현황", 34, new Vector2(0f, 255f), new Vector2(640f, 55f), Color.white, TextAlignmentOptions.Center);
 
             ParticipantTeamBoardScreen board = root.GetComponent<ParticipantTeamBoardScreen>();
             if (board == null)
@@ -373,7 +374,7 @@ namespace CheeseSportDay.Editor
                 new Color(0.07f, 0.08f, 0.1f, 1f));
             background.rectTransform.sizeDelta = new Vector2(boardWidth, 600f);
 
-            Text title = GetOrCreateText(
+            TextMeshProUGUI title = GetOrCreateText(
                 rootRect,
                 "Title",
                 "팀 현황",
@@ -381,7 +382,7 @@ namespace CheeseSportDay.Editor
                 new Vector2(0f, 255f),
                 new Vector2(boardWidth - 60f, 55f),
                 Color.white,
-                TextAnchor.MiddleCenter);
+                TextAlignmentOptions.Center);
             title.rectTransform.sizeDelta = new Vector2(boardWidth - 60f, 55f);
 
             Transform existingColumns = rootRect.Find("Team Columns");
@@ -438,7 +439,7 @@ namespace CheeseSportDay.Editor
                 new Vector2(0f, 205f),
                 new Vector2(300f, 50f),
                 teamColor).GetComponent<Image>();
-            Text teamNameText = GetOrCreateText(
+            TextMeshProUGUI teamNameText = GetOrCreateText(
                 header.rectTransform,
                 "Team Name",
                 teamName,
@@ -446,11 +447,11 @@ namespace CheeseSportDay.Editor
                 Vector2.zero,
                 new Vector2(270f, 44f),
                 GetReadableTextColor(teamColor),
-                TextAnchor.MiddleCenter);
+                TextAlignmentOptions.Center);
 
             GameObject[] memberRoots = new GameObject[MemberSlotsPerTeam];
             Image[] memberPortraitImages = new Image[MemberSlotsPerTeam];
-            Text[] memberNameTexts = new Text[MemberSlotsPerTeam];
+            TextMeshProUGUI[] memberNameTexts = new TextMeshProUGUI[MemberSlotsPerTeam];
 
             for (int slotIndex = 0; slotIndex < MemberSlotsPerTeam; slotIndex++)
             {
@@ -474,7 +475,7 @@ namespace CheeseSportDay.Editor
                     Color.white).GetComponent<Image>();
                 portrait.preserveAspect = true;
 
-                Text memberName = GetOrCreateText(
+                TextMeshProUGUI memberName = GetOrCreateText(
                     memberRect,
                     "Name",
                     "",
@@ -482,7 +483,7 @@ namespace CheeseSportDay.Editor
                     new Vector2(20f, 0f),
                     new Vector2(92f, 34f),
                     Color.white,
-                    TextAnchor.MiddleLeft);
+                    TextAlignmentOptions.MidlineLeft);
 
                 memberRoots[slotIndex] = memberRoot;
                 memberPortraitImages[slotIndex] = portrait;
@@ -525,15 +526,15 @@ namespace CheeseSportDay.Editor
             return CreateImage(parent, name, position, size, color).GetComponent<Image>();
         }
 
-        private static Text GetOrCreateText(RectTransform parent, string name, string value, int fontSize, Vector2 position, Vector2 size, Color color, TextAnchor alignment)
+        private static TextMeshProUGUI GetOrCreateText(RectTransform parent, string name, string value, int fontSize, Vector2 position, Vector2 size, Color color, TextAlignmentOptions alignment)
         {
             Transform existing = parent.Find(name);
-            Text text;
+            TextMeshProUGUI text;
 
             if (existing == null)
             {
-                GameObject textObject = new GameObject(name, typeof(RectTransform), typeof(Text));
-                Undo.RegisterCreatedObjectUndo(textObject, "Create Participant Team Text");
+                GameObject textObject = new GameObject(name, typeof(RectTransform), typeof(TextMeshProUGUI));
+                Undo.RegisterCreatedObjectUndo(textObject, "Create Participant Team TextMeshProUGUI");
                 textObject.transform.SetParent(parent, false);
 
                 RectTransform rect = textObject.GetComponent<RectTransform>();
@@ -541,21 +542,31 @@ namespace CheeseSportDay.Editor
                 rect.anchorMax = new Vector2(0.5f, 0.5f);
                 rect.anchoredPosition = position;
                 rect.sizeDelta = size;
-                text = textObject.GetComponent<Text>();
+                text = textObject.GetComponent<TextMeshProUGUI>();
             }
             else
             {
-                text = existing.GetComponent<Text>();
+                text = existing.GetComponent<TextMeshProUGUI>();
+                if (text == null)
+                {
+                    text = Undo.AddComponent<TextMeshProUGUI>(existing.gameObject);
+                }
+            }
+
+            TMP_FontAsset fontAsset = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(
+                LegacyTextToTmpPrefabMigrator.FontAssetPath);
+            if (fontAsset != null)
+            {
+                text.font = fontAsset;
             }
 
             text.text = value;
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             text.fontSize = fontSize;
             text.alignment = alignment;
             text.color = color;
-            text.resizeTextForBestFit = true;
-            text.resizeTextMinSize = 10;
-            text.resizeTextMaxSize = fontSize;
+            text.enableAutoSizing = true;
+            text.fontSizeMin = 10;
+            text.fontSizeMax = fontSize;
             return text;
         }
 

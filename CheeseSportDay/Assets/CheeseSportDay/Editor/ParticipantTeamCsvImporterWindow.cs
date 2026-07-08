@@ -10,11 +10,11 @@ namespace CheeseSportDay.Editor
 {
     public class ParticipantTeamCsvImporterWindow : EditorWindow
     {
-        private ParticipantRosterScreen targetScreen;
+        private ParticipantTeamBoardScreen targetBoard;
         private TextAsset csvAsset;
         private bool autoConvertTexturesToSprites = true;
 
-        [MenuItem("Cheese Sport Day/Participant Roster/Import Team CSV")]
+        [MenuItem("Cheese Sport Day/Team Board/Import Team CSV")]
         public static void Open()
         {
             GetWindow<ParticipantTeamCsvImporterWindow>("Team CSV Import");
@@ -23,10 +23,10 @@ namespace CheeseSportDay.Editor
         private void OnGUI()
         {
             EditorGUILayout.LabelField("Participant Team CSV", EditorStyles.boldLabel);
-            targetScreen = (ParticipantRosterScreen)EditorGUILayout.ObjectField(
-                "Target Roster Screen",
-                targetScreen,
-                typeof(ParticipantRosterScreen),
+            targetBoard = (ParticipantTeamBoardScreen)EditorGUILayout.ObjectField(
+                "Target Team Board Screen",
+                targetBoard,
+                typeof(ParticipantTeamBoardScreen),
                 true);
             csvAsset = (TextAsset)EditorGUILayout.ObjectField(
                 "Team CSV TextAsset",
@@ -43,7 +43,7 @@ namespace CheeseSportDay.Editor
                 + "Colors use HTML values such as #E63946.",
                 MessageType.Info);
 
-            EditorGUI.BeginDisabledGroup(targetScreen == null || csvAsset == null);
+            EditorGUI.BeginDisabledGroup(targetBoard == null || csvAsset == null);
             if (GUILayout.Button("Import Team CSV"))
             {
                 ImportCsv();
@@ -53,16 +53,17 @@ namespace CheeseSportDay.Editor
 
         private void ImportCsv()
         {
-            ParticipantTeamSetupMenu.ConfigureForRoster(targetScreen);
-            ParticipantTeamBoardScreen board = targetScreen.teamBoardScreen;
+            ParticipantTeamBoardScreen board = targetBoard;
             if (board == null)
             {
                 EditorUtility.DisplayDialog(
                     "Team CSV Import",
-                    "Unable to create or find the Participant Team Board Screen.",
+                    "Select a Participant Team Board Screen.",
                     "OK");
                 return;
             }
+
+            ParticipantRosterScreen rosterScreen = board.rosterScreen;
 
             List<string[]> rows = ParseCsv(csvAsset.text);
             if (rows.Count < 2)
@@ -163,28 +164,29 @@ namespace CheeseSportDay.Editor
             }
 
             Undo.RecordObject(board, "Import Participant Team CSV");
-            board.rosterScreen = targetScreen;
             board.teamNames = teamNames.ToArray();
             board.teamCaptainNames = captainNames.ToArray();
             board.teamCaptainPortraits = captainPortraits.ToArray();
             board.teamColors = teamColors.ToArray();
 
-            AssignCaptainNamesToButtons(captainNames, warnings);
+            AssignCaptainNamesToButtons(rosterScreen, captainNames, warnings);
 
-            int participantCount = targetScreen.GetParticipantCount();
+            int participantCount = rosterScreen == null ? 0 : rosterScreen.GetParticipantCount();
             board.participantTeamIndices = new int[participantCount];
             for (int i = 0; i < board.participantTeamIndices.Length; i++)
             {
                 board.participantTeamIndices[i] = -1;
             }
 
-            ParticipantTeamSetupMenu.RebuildTeamPresentation(targetScreen);
             board.RefreshAllViews();
 
             EditorUtility.SetDirty(board);
-            EditorUtility.SetDirty(targetScreen);
             PrefabUtility.RecordPrefabInstancePropertyModifications(board);
-            PrefabUtility.RecordPrefabInstancePropertyModifications(targetScreen);
+            if (rosterScreen != null)
+            {
+                EditorUtility.SetDirty(rosterScreen);
+                PrefabUtility.RecordPrefabInstancePropertyModifications(rosterScreen);
+            }
             AssetDatabase.SaveAssets();
 
             string message = "Imported " + captainNames.Count + " teams.";
@@ -196,9 +198,18 @@ namespace CheeseSportDay.Editor
             EditorUtility.DisplayDialog("Team CSV Import", message, "OK");
         }
 
-        private void AssignCaptainNamesToButtons(List<string> captainNames, List<string> warnings)
+        private void AssignCaptainNamesToButtons(
+            ParticipantRosterScreen rosterScreen,
+            List<string> captainNames,
+            List<string> warnings)
         {
-            WorldScreenButton[] buttons = targetScreen.teamButtons;
+            if (rosterScreen == null)
+            {
+                warnings.Add("The Team Board Screen has no Roster Screen assigned, so team buttons were not updated.");
+                return;
+            }
+
+            WorldScreenButton[] buttons = rosterScreen.teamButtons;
             int buttonCount = buttons == null ? 0 : buttons.Length;
 
             if (buttonCount < captainNames.Count)

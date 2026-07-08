@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UdonSharp;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using VRC.SDKBase;
@@ -23,9 +24,8 @@ namespace CheeseSportDay.WorldUI
 
         [Header("Grid")]
         public ParticipantCard[] participantCards;
-        public Text pageText;
+        public TextMeshProUGUI pageText;
         public Color normalCardColor = new Color(0.92f, 0.92f, 0.92f, 1f);
-        public Color selectedCardColor = new Color(1f, 0.92f, 0.35f, 1f);
 
         [Header("Detail")]
         public DetailScreen detailRoot;
@@ -150,12 +150,21 @@ namespace CheeseSportDay.WorldUI
                 }
 
                 card.Bind(this, participantIndex);
+                int teamIndex = teamBoardScreen == null
+                    ? -1
+                    : teamBoardScreen.GetParticipantTeam(participantIndex);
+                bool isAssigned = teamBoardScreen != null
+                    && teamIndex >= 0
+                    && teamIndex < teamBoardScreen.GetTeamCount();
+                Color cardColor = isAssigned
+                    ? teamBoardScreen.GetTeamColor(teamIndex)
+                    : normalCardColor;
+
                 card.SetContent(
                     GetString(participantNames, participantIndex, ""),
                     GetSprite(participantPortraits, participantIndex),
-                    participantIndex == selectedIndex,
-                    normalCardColor,
-                    selectedCardColor);
+                    cardColor,
+                    isAssigned);
             }
         }
 

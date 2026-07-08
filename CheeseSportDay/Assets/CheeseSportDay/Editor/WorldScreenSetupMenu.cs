@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using CheeseSportDay.WorldUI;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -99,10 +100,10 @@ namespace CheeseSportDay.Editor
             return panel;
         }
 
-        private static Text CreateText(RectTransform parent, string name, string value, int size, Vector2 anchoredPosition)
+        private static TextMeshProUGUI CreateText(RectTransform parent, string name, string value, int size, Vector2 anchoredPosition)
         {
-            GameObject textObject = new GameObject(name, typeof(RectTransform), typeof(Text));
-            Undo.RegisterCreatedObjectUndo(textObject, "Create Screen Text");
+            GameObject textObject = new GameObject(name, typeof(RectTransform), typeof(TextMeshProUGUI));
+            Undo.RegisterCreatedObjectUndo(textObject, "Create Screen TextMeshProUGUI");
             textObject.transform.SetParent(parent, false);
 
             RectTransform rect = textObject.GetComponent<RectTransform>();
@@ -111,11 +112,16 @@ namespace CheeseSportDay.Editor
             rect.anchoredPosition = anchoredPosition;
             rect.sizeDelta = new Vector2(680f, 70f);
 
-            Text text = textObject.GetComponent<Text>();
+            TextMeshProUGUI text = textObject.GetComponent<TextMeshProUGUI>();
+            TMP_FontAsset fontAsset = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(
+                LegacyTextToTmpPrefabMigrator.FontAssetPath);
+            if (fontAsset != null)
+            {
+                text.font = fontAsset;
+            }
             text.text = value;
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             text.fontSize = size;
-            text.alignment = TextAnchor.MiddleCenter;
+            text.alignment = TextAlignmentOptions.Center;
             text.color = Color.white;
 
             return text;

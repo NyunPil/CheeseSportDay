@@ -1,5 +1,7 @@
 #if UNITY_EDITOR
 using CheeseSportDay.WorldUI;
+using TMPro;
+using UdonSharp.Compiler;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,6 +17,28 @@ namespace CheeseSportDay.Editor
         private const float CardWidth = 112f;
         private const float CardHeight = 90f;
         private const string CardPrefabPath = "Assets/CheeseSportDay/Prefab/Participant Card.prefab";
+
+        [InitializeOnLoadMethod]
+        private static void QueueCardPrefabUpgrade()
+        {
+            EditorApplication.delayCall += UpgradeCardPrefabIfNeeded;
+        }
+
+        private static void UpgradeCardPrefabIfNeeded()
+        {
+            GameObject cardPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(CardPrefabPath);
+            ParticipantCard participantCard = cardPrefab == null
+                ? null
+                : cardPrefab.GetComponent<ParticipantCard>();
+            if (participantCard == null || participantCard.selectSuccessObj != null)
+            {
+                return;
+            }
+
+            ConfigureExistingCardPrefab();
+            UdonSharpCompilerV1.CompileSync();
+            AssetDatabase.SaveAssets();
+        }
 
         [MenuItem("Cheese Sport Day/Participant Roster/Create or Select Card Prefab")]
         public static void CreateOrSelectCardPrefab()
@@ -120,7 +144,7 @@ namespace CheeseSportDay.Editor
                 false).GetComponent<Image>();
             portrait.preserveAspect = true;
 
-            Text nameText = CreateText(
+            TextMeshProUGUI nameText = CreateText(
                 cardRect,
                 "Name",
                 "Participant",
@@ -128,12 +152,13 @@ namespace CheeseSportDay.Editor
                 new Vector2(0f, -34f),
                 new Vector2(CardWidth - 12f, 22f),
                 Color.black,
-                TextAnchor.MiddleCenter,
+                TextAlignmentOptions.Center,
                 false);
 
             participantCard.backgroundImage = background;
             participantCard.portraitImage = portrait;
             participantCard.nameText = nameText;
+            participantCard.selectSuccessObj = CreateSelectSuccessObject(cardRect, false);
 
             GameObject savedPrefab = PrefabUtility.SaveAsPrefabAsset(card, CardPrefabPath);
             UnityEngine.Object.DestroyImmediate(card);
@@ -149,6 +174,11 @@ namespace CheeseSportDay.Editor
 
         private static void ConfigureExistingCardPrefab()
         {
+            if (AssetDatabase.LoadAssetAtPath<GameObject>(CardPrefabPath) == null)
+            {
+                return;
+            }
+
             GameObject prefabContents = PrefabUtility.LoadPrefabContents(CardPrefabPath);
             try
             {
@@ -158,9 +188,12 @@ namespace CheeseSportDay.Editor
                     return;
                 }
 
+                bool changed = false;
+
                 if (participantCard.backgroundImage == null)
                 {
                     participantCard.backgroundImage = prefabContents.GetComponent<Image>();
+                    changed = true;
                 }
 
                 if (participantCard.portraitImage == null)
@@ -169,6 +202,7 @@ namespace CheeseSportDay.Editor
                     if (portrait != null)
                     {
                         participantCard.portraitImage = portrait.GetComponent<Image>();
+                        changed = true;
                     }
                 }
 
@@ -177,18 +211,36 @@ namespace CheeseSportDay.Editor
                     Transform name = prefabContents.transform.Find("Name");
                     if (name != null)
                     {
-                        participantCard.nameText = name.GetComponent<Text>();
+                        participantCard.nameText = name.GetComponent<TextMeshProUGUI>();
+                        changed = true;
                     }
                 }
 
-                PrefabUtility.SaveAsPrefabAsset(prefabContents, CardPrefabPath);
+                if (participantCard.selectSuccessObj == null)
+                {
+                    Transform success = prefabContents.transform.Find("Select Success");
+                    participantCard.selectSuccessObj = success == null
+                        ? CreateSelectSuccessObject(prefabContents.GetComponent<RectTransform>(), false)
+                        : success.gameObject;
+                    changed = true;
+                }
+
+                if (participantCard.selectSuccessObj.activeSelf)
+                {
+                    participantCard.selectSuccessObj.SetActive(false);
+                    changed = true;
+                }
+
+                if (changed)
+                {
+                    PrefabUtility.SaveAsPrefabAsset(prefabContents, CardPrefabPath);
+                }
             }
             finally
             {
                 PrefabUtility.UnloadPrefabContents(prefabContents);
             }
         }
-
         private static bool ValidateCardPrefab(GameObject cardPrefab)
         {
             ParticipantCard participantCard = cardPrefab == null ? null : cardPrefab.GetComponent<ParticipantCard>();
@@ -198,13 +250,14 @@ namespace CheeseSportDay.Editor
                 && participantCard != null
                 && participantCard.backgroundImage != null
                 && participantCard.portraitImage != null
-                && participantCard.nameText != null;
+                && participantCard.nameText != null
+                && participantCard.selectSuccessObj != null;
 
             if (!isValid)
             {
                 EditorUtility.DisplayDialog(
                     "Invalid Participant Card Prefab",
-                    "The prefab must contain a BoxCollider and ParticipantCard with Background, Portrait, and Name references.",
+                    "The prefab must contain a BoxCollider and ParticipantCard with Background, Portrait, Name, and Select Success references.",
                     "OK");
             }
 
@@ -243,13 +296,26 @@ namespace CheeseSportDay.Editor
             button.rosterScreen = roster;
             button.pageAction = action;
 
-            CreateText(buttonObject.GetComponent<RectTransform>(), "Label", label, 24, Vector2.zero, new Vector2(60f, 36f), Color.white, TextAnchor.MiddleCenter);
+            CreateText(buttonObject.GetComponent<RectTransform>(), "Label", label, 24, Vector2.zero, new Vector2(60f, 36f), Color.white, TextAlignmentOptions.Center);
         }
 
-        private static Text CreateStatText(RectTransform parent, string name, Vector2 position, Color color)
+        private static TextMeshProUGUI CreateStatText(RectTransform parent, string name, Vector2 position, Color color)
         {
             GameObject background = CreateImage(parent, name + " Background", position, new Vector2(112f, 42f), color);
-            return CreateText(background.GetComponent<RectTransform>(), name, "", 18, Vector2.zero, new Vector2(104f, 36f), Color.white, TextAnchor.MiddleCenter);
+            return CreateText(background.GetComponent<RectTransform>(), name, "", 18, Vector2.zero, new Vector2(104f, 36f), Color.white, TextAlignmentOptions.Center);
+        }
+
+        private static GameObject CreateSelectSuccessObject(RectTransform parent, bool registerUndo)
+        {
+            GameObject success = CreateImage(
+                parent,
+                "Select Success",
+                new Vector2(CardWidth * 0.5f - 12f, CardHeight * 0.5f - 12f),
+                new Vector2(16f, 16f),
+                new Color(1f, 1f, 1f, 0.9f),
+                registerUndo);
+            success.SetActive(false);
+            return success;
         }
 
         private static GameObject CreateImage(RectTransform parent, string name, Vector2 position, Vector2 size, Color color, bool registerUndo = true)
@@ -274,12 +340,12 @@ namespace CheeseSportDay.Editor
             return imageObject;
         }
 
-        private static Text CreateText(RectTransform parent, string name, string value, int size, Vector2 position, Vector2 textSize, Color color, TextAnchor alignment, bool registerUndo = true)
+        private static TextMeshProUGUI CreateText(RectTransform parent, string name, string value, int size, Vector2 position, Vector2 textSize, Color color, TextAlignmentOptions alignment, bool registerUndo = true)
         {
-            GameObject textObject = new GameObject(name, typeof(RectTransform), typeof(Text));
+            GameObject textObject = new GameObject(name, typeof(RectTransform), typeof(TextMeshProUGUI));
             if (registerUndo)
             {
-                Undo.RegisterCreatedObjectUndo(textObject, "Create Roster Text");
+                Undo.RegisterCreatedObjectUndo(textObject, "Create Roster TextMeshProUGUI");
             }
 
             textObject.transform.SetParent(parent, false);
@@ -290,15 +356,21 @@ namespace CheeseSportDay.Editor
             rect.anchoredPosition = position;
             rect.sizeDelta = textSize;
 
-            Text text = textObject.GetComponent<Text>();
+            TextMeshProUGUI text = textObject.GetComponent<TextMeshProUGUI>();
+            TMP_FontAsset fontAsset = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(
+                LegacyTextToTmpPrefabMigrator.FontAssetPath);
+            if (fontAsset != null)
+            {
+                text.font = fontAsset;
+            }
+
             text.text = value;
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             text.fontSize = size;
             text.alignment = alignment;
             text.color = color;
-            text.resizeTextForBestFit = true;
-            text.resizeTextMinSize = 10;
-            text.resizeTextMaxSize = size;
+            text.enableAutoSizing = true;
+            text.fontSizeMin = 10;
+            text.fontSizeMax = size;
 
             return text;
         }
