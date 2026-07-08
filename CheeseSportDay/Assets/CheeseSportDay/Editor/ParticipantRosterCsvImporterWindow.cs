@@ -25,10 +25,9 @@ namespace CheeseSportDay.Editor
             EditorGUILayout.LabelField("Participant Roster CSV", EditorStyles.boldLabel);
             targetScreen = (ParticipantRosterScreen)EditorGUILayout.ObjectField("Target Screen", targetScreen, typeof(ParticipantRosterScreen), true);
             csvAsset = (TextAsset)EditorGUILayout.ObjectField("CSV TextAsset", csvAsset, typeof(TextAsset), false);
-            autoConvertTexturesToSprites = EditorGUILayout.Toggle("Auto Convert Images", autoConvertTexturesToSprites);
-
+            autoConvertTexturesToSprites = EditorGUILayout.Toggle("Auto Convert Profile Images", autoConvertTexturesToSprites);
             EditorGUILayout.HelpBox(
-                "Recognized columns: name/이름, image/이미지, title/종목, detail/설명, gameSkill/게임실력, gameSense/게임센스, teamwork/협동력, physical/피지컬, luck/운. Image values should be Resources paths such as Participants/Alice.",
+                "Required column order: name, profile, skill, luck, teamwork, bodyText. Profile accepts an image name such as Alice or a Resources path such as Participants/Alice.",
                 MessageType.Info);
 
             EditorGUI.BeginDisabledGroup(targetScreen == null || csvAsset == null);
@@ -55,31 +54,24 @@ namespace CheeseSportDay.Editor
             }
 
             int nameColumn = FindColumn(headers, "name", "displayname", "participant", "nickname", "이름", "닉네임", "참가자");
-            int imageColumn = FindColumn(headers, "image", "imagepath", "portrait", "portraitpath", "avatar", "resources", "이미지", "사진", "프로필", "이미지경로");
-            int titleColumn = FindColumn(headers, "title", "category", "game", "event", "role", "종목", "분류", "게임", "타이틀", "역할");
-            int detailColumn = FindColumn(headers, "detail", "description", "note", "memo", "comment", "설명", "비고", "메모", "특이사항");
+            int profileColumn = FindColumn(headers, "profile", "profileimage", "image", "portrait", "프로필", "사진", "이미지");
             int skillColumn = FindColumn(headers, "gameskill", "skill", "ability", "게임실력", "실력");
-            int senseColumn = FindColumn(headers, "gamesense", "sense", "awareness", "게임센스", "센스");
-            int teamworkColumn = FindColumn(headers, "teamwork", "cooperation", "collaboration", "협동력", "협력");
-            int physicalColumn = FindColumn(headers, "physical", "stamina", "피지컬", "체력");
             int luckColumn = FindColumn(headers, "luck", "fortune", "운", "운빨");
+            int teamworkColumn = FindColumn(headers, "teamwork", "cooperation", "collaboration", "협동력", "협력");
+            int bodyTextColumn = FindColumn(headers, "bodytext", "body", "detail", "description", "설명", "본문");
 
-            if (nameColumn < 0)
+            if (nameColumn < 0 || profileColumn < 0 || skillColumn < 0 || luckColumn < 0 || teamworkColumn < 0 || bodyTextColumn < 0)
             {
-                EditorUtility.DisplayDialog("CSV Import", "No participant name column found. Add a name or 이름 column.", "OK");
+                EditorUtility.DisplayDialog("CSV Import", "Required columns: name, profile, skill, luck, teamwork, bodyText.", "OK");
                 return;
             }
 
-            bool[] knownColumns = BuildKnownColumnMap(headers.Length, nameColumn, imageColumn, titleColumn, detailColumn, skillColumn, senseColumn, teamworkColumn, physicalColumn, luckColumn);
             List<string> names = new List<string>();
-            List<string> titles = new List<string>();
             List<string> details = new List<string>();
-            List<Sprite> portraits = new List<Sprite>();
+            List<Sprite> profiles = new List<Sprite>();
             List<int> skillValues = new List<int>();
-            List<int> senseValues = new List<int>();
-            List<int> teamworkValues = new List<int>();
-            List<int> physicalValues = new List<int>();
             List<int> luckValues = new List<int>();
+            List<int> teamworkValues = new List<int>();
             List<string> warnings = new List<string>();
 
             for (int rowIndex = 1; rowIndex < rows.Count; rowIndex++)
@@ -91,27 +83,32 @@ namespace CheeseSportDay.Editor
                     continue;
                 }
 
+                string profileName = GetCell(row, profileColumn);
+                if (string.IsNullOrEmpty(profileName))
+                {
+                    warnings.Add("Missing profile on row " + (rowIndex + 1).ToString() + ": " + name);
+                }
+
                 names.Add(name);
-                titles.Add(GetCell(row, titleColumn));
-                details.Add(BuildDetailText(headers, row, knownColumns, detailColumn));
-                portraits.Add(LoadPortrait(GetCell(row, imageColumn), warnings));
+                details.Add(GetCell(row, bodyTextColumn));
+                profiles.Add(LoadPortrait(profileName, warnings));
                 skillValues.Add(ParseStat(GetCell(row, skillColumn)));
-                senseValues.Add(ParseStat(GetCell(row, senseColumn)));
-                teamworkValues.Add(ParseStat(GetCell(row, teamworkColumn)));
-                physicalValues.Add(ParseStat(GetCell(row, physicalColumn)));
                 luckValues.Add(ParseStat(GetCell(row, luckColumn)));
+                teamworkValues.Add(ParseStat(GetCell(row, teamworkColumn)));
             }
 
             Undo.RecordObject(targetScreen, "Import Participant Roster CSV");
             targetScreen.participantNames = names.ToArray();
-            targetScreen.participantTitles = titles.ToArray();
             targetScreen.participantDetails = details.ToArray();
-            targetScreen.participantPortraits = portraits.ToArray();
+            targetScreen.participantPortraits = profiles.ToArray();
             targetScreen.gameSkillValues = skillValues.ToArray();
-            targetScreen.gameSenseValues = senseValues.ToArray();
-            targetScreen.teamworkValues = teamworkValues.ToArray();
-            targetScreen.physicalValues = physicalValues.ToArray();
             targetScreen.luckValues = luckValues.ToArray();
+            targetScreen.teamworkValues = teamworkValues.ToArray();
+
+            int participantCount = names.Count;
+            targetScreen.participantTitles = new string[participantCount];
+            targetScreen.gameSenseValues = new int[participantCount];
+            targetScreen.physicalValues = new int[participantCount];
             targetScreen.RefreshAll();
 
             if (targetScreen.teamBoardScreen != null)
@@ -238,7 +235,8 @@ namespace CheeseSportDay.Editor
                 path = path.Substring("Resources/".Length);
             }
 
-            return StripExtension(path);
+            path = StripExtension(path);
+            return path.IndexOf('/') < 0 ? "Participants/" + path : path;
         }
 
         private static string FindResourceAssetPath(string resourcesPath)

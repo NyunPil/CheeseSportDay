@@ -372,10 +372,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Participant
+  m_text: "\uCC38\uAC00\uC790"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8c904013134d2134281a98eb616c6f34, type: 2}
-  m_sharedMaterial: {fileID: 7334966014800829527, guid: 8c904013134d2134281a98eb616c6f34,
+  m_fontAsset: {fileID: 11400000, guid: 4a93dcb197571b646857b1e5eef3fb27, type: 2}
+  m_sharedMaterial: {fileID: -4193083716703012051, guid: 4a93dcb197571b646857b1e5eef3fb27,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}

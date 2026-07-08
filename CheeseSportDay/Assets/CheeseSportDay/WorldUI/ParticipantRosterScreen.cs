@@ -177,16 +177,13 @@ namespace CheeseSportDay.WorldUI
                 return;
             }
 
-            detailRoot.RefreshDetail(GetString(participantNames, selectedIndex, ""),
-                GetString(participantTitles, selectedIndex, ""),
+            detailRoot.RefreshDetail(
+                GetString(participantNames, selectedIndex, ""),
                 GetString(participantDetails, selectedIndex, ""),
                 GetSprite(participantPortraits, selectedIndex),
                 GetInt(gameSkillValues, selectedIndex),
-                GetInt(gameSenseValues, selectedIndex),
-                GetInt(teamworkValues, selectedIndex),
-                GetInt(physicalValues, selectedIndex),
-                GetInt(luckValues, selectedIndex)
-                );
+                GetInt(luckValues, selectedIndex),
+                GetInt(teamworkValues, selectedIndex));
 
             int teamIndex = teamBoardScreen == null
                 ? -1

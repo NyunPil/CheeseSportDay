@@ -12,13 +12,16 @@ public class DetailScreen : UdonSharpBehaviour
     public GameObject detailRoot;
     public Image detailPortraitImage;
     public TextMeshProUGUI detailNameText;
-    public TextMeshProUGUI detailTitleText;
+
     public TextMeshProUGUI detailBodyText;
-    public TextMeshProUGUI gameSkillText;
-    public TextMeshProUGUI gameSenseText;
-    public TextMeshProUGUI teamworkText;
-    public TextMeshProUGUI physicalText;
-    public TextMeshProUGUI luckText;
+
+    public TextMeshProUGUI gameSkillTitleText;
+    public TextMeshProUGUI teamworkTitleText;
+    public TextMeshProUGUI luckTitleText;
+
+    public TextMeshProUGUI gameSkillValueText;
+    public TextMeshProUGUI teamworkValueText;
+    public TextMeshProUGUI luckValueText;
 
     [Header("Team")]
     public TextMeshProUGUI currentTeamText;
@@ -27,40 +30,27 @@ public class DetailScreen : UdonSharpBehaviour
 
     [Header("Labels")]
     public string gameSkillLabel = "Skill";
-    public string gameSenseLabel = "Sense";
     public string teamworkLabel = "Teamwork";
-    public string physicalLabel = "Physical";
     public string luckLabel = "Luck";
 
-    public void RefreshDetail(string name, string title, string body, Sprite sprite, int value1, int value2, int value3, int value4, int value5)
+    public void RefreshDetail(string name, string body, Sprite profile, int gameSkill, int luck, int teamwork)
     {
-        if (detailNameText != null)
-        {
-            detailNameText.text = name;
-        }
-
-        if (detailTitleText != null)
-        {
-            detailTitleText.text = title;
-        }
-
-        if (detailBodyText != null)
-        {
-            detailBodyText.text = body;
-        }
+        SetText(detailNameText, name);
+        SetText(detailBodyText, body);
 
         if (detailPortraitImage != null)
         {
-            Sprite portrait = sprite;
-            detailPortraitImage.sprite = portrait;
-            detailPortraitImage.enabled = portrait != null;
+            detailPortraitImage.sprite = profile;
+            detailPortraitImage.enabled = profile != null;
         }
 
-        SetStatText(gameSkillText, gameSkillLabel, value1);
-        SetStatText(gameSenseText, gameSenseLabel, value2);
-        SetStatText(teamworkText, teamworkLabel, value3);
-        SetStatText(physicalText, physicalLabel, value4);
-        SetStatText(luckText, luckLabel, value5);
+        SetText(gameSkillTitleText, gameSkillLabel);
+        SetText(teamworkTitleText, teamworkLabel);
+        SetText(luckTitleText, luckLabel);
+
+        SetValueText(gameSkillValueText, gameSkill);
+        SetValueText(teamworkValueText, teamwork);
+        SetValueText(luckValueText, luck);
     }
 
     public void RefreshTeam(string teamName)
@@ -74,11 +64,19 @@ public class DetailScreen : UdonSharpBehaviour
         currentTeamText.text = currentTeamLabel + ": " + value;
     }
 
-    private void SetStatText(TextMeshProUGUI target, string label, int value)
+    private void SetText(TextMeshProUGUI target, string value)
     {
         if (target != null)
         {
-            target.text = $"{label}\n{value.ToString()}";
+            target.text = value;
+        }
+    }
+
+    private void SetValueText(TextMeshProUGUI target, int value)
+    {
+        if (target != null)
+        {
+            target.text = value.ToString();
         }
     }
 }

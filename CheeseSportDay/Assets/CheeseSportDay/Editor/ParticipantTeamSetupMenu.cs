@@ -18,6 +18,7 @@ namespace CheeseSportDay.Editor
         private const string TeamButtonAssetPath = "Assets/CheeseSportDay/WorldUI/ParticipantTeamSelectButton.asset";
         private const string TeamColumnScriptPath = "Assets/CheeseSportDay/WorldUI/ParticipantTeamColumn.cs";
         private const string TeamColumnAssetPath = "Assets/CheeseSportDay/WorldUI/ParticipantTeamColumn.asset";
+        private const string TeamButtonFontAssetPath = "Assets/CheeseSportDay/Fonts/Jalnan2 SDF.asset";
 
         [InitializeOnLoadMethod]
         private static void QueueProgramAssetSetup()
@@ -278,7 +279,7 @@ namespace CheeseSportDay.Editor
             button.teamIndex = teamIndex;
 
             Color textColor = GetReadableTextColor(color);
-            GetOrCreateText(
+            TextMeshProUGUI labelText = GetOrCreateText(
                 buttonObject.GetComponent<RectTransform>(),
                 "Label",
                 label,
@@ -287,6 +288,16 @@ namespace CheeseSportDay.Editor
                 new Vector2(82f, 30f),
                 textColor,
                 TextAlignmentOptions.Center);
+
+            TMP_FontAsset buttonFont = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(TeamButtonFontAssetPath);
+            if (buttonFont != null)
+            {
+                labelText.font = buttonFont;
+            }
+            else
+            {
+                Debug.LogWarning("Unable to find team button font at " + TeamButtonFontAssetPath);
+            }
         }
 
         private static ParticipantTeamBoardScreen CreateTeamBoardScreen(ParticipantRosterScreen roster)

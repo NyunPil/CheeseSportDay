@@ -142,8 +142,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uC774\uB984"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8c904013134d2134281a98eb616c6f34, type: 2}
-  m_sharedMaterial: {fileID: 7334966014800829527, guid: 8c904013134d2134281a98eb616c6f34,
+  m_fontAsset: {fileID: 11400000, guid: 4a93dcb197571b646857b1e5eef3fb27, type: 2}
+  m_sharedMaterial: {fileID: -4193083716703012051, guid: 4a93dcb197571b646857b1e5eef3fb27,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -163,7 +163,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
