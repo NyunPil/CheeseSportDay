@@ -31,6 +31,7 @@ namespace CheeseSports
 
         const string RootName = "TeleportSystem";
         const string MatFolder = "Assets/CheeseSportsArena/Materials";
+        const string GalleryPrefabPath = "Assets/CheeseSportsArena/Prefabs/GalleryArea.prefab";
 
         [MenuItem("Tools/🧀 치즈 운동회/포탈 배치기")]
         static void Open()
@@ -39,12 +40,52 @@ namespace CheeseSports
             w.minSize = new Vector2(340, 420);
         }
 
-        // 원클릭용: 창 안 열고 배치 + 텔레포트 연결까지
+        // 원클릭용: 창 안 열고 갤러리 배치 + 버튼 배치 + 텔레포트 연결까지
         public static void BuildAndWireDefault()
         {
             var w = CreateInstance<PortalBuilder>();
-            try { w.Build(); w.WireTeleports(); }
+            try { EnsureGalleryPlaced(); w.Build(); w.WireTeleports(); }
             finally { DestroyImmediate(w); }
+        }
+
+        // ★ 메뉴: 갤러리 프리팹 배치 + 포탈 버튼 배치를 한 번에
+        [MenuItem("Tools/🧀 치즈 운동회/🖼 갤러리+버튼 한번에 배치")]
+        static void PlaceGalleryAndBuildMenu()
+        {
+            var w = CreateInstance<PortalBuilder>();
+            try
+            {
+                bool placed = EnsureGalleryPlaced();
+                w.Build();
+                Debug.Log(placed
+                    ? "✅ 갤러리 프리팹 배치 + 포탈 버튼 배치 완료! 이제 '🔌 텔레포트 자동 연결'로 버튼을 연결하고 Ctrl+S 저장하세요."
+                    : "ℹ 갤러리는 이미 씬에 있어서 버튼만 배치했어요. '🔌 텔레포트 자동 연결' 후 Ctrl+S 저장.");
+            }
+            finally { DestroyImmediate(w); }
+        }
+
+        // 갤러리 프리팹을 씬에 배치(이미 있으면 스킵). 새로 넣었으면 true.
+        static bool EnsureGalleryPlaced()
+        {
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(GalleryPrefabPath);
+            if (prefab == null)
+            {
+                Debug.LogError($"❌ 갤러리 프리팹을 못 찾음: {GalleryPrefabPath} (git pull 됐는지 확인)");
+                return false;
+            }
+            foreach (var go in GameObject.FindObjectsOfType<GameObject>(true))
+            {
+                if (PrefabUtility.IsAnyPrefabInstanceRoot(go)
+                    && PrefabUtility.GetCorrespondingObjectFromSource(go) == prefab)
+                    return false;   // 이미 배치돼 있음
+            }
+            var inst = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+            inst.transform.localPosition = Vector3.zero;
+            inst.transform.localRotation = Quaternion.identity;
+            inst.transform.localScale = Vector3.one;
+            Undo.RegisterCreatedObjectUndo(inst, "Place Gallery");
+            EditorSceneManager.MarkSceneDirty(inst.scene);
+            return true;
         }
 
         void OnGUI()
@@ -57,6 +98,17 @@ namespace CheeseSports
                 "  Btn_Draft_to_Team → Arrival_Team\n" +
                 "  Btn_Draft_to_Gallery → Arrival_Gallery", MessageType.Info);
 
+            GUI.backgroundColor = new Color(0.4f, 0.9f, 0.5f);
+            if (GUILayout.Button("🖼 갤러리 프리팹 배치 + 버튼 배치 (한번에)", GUILayout.Height(34)))
+            {
+                bool placed = EnsureGalleryPlaced();
+                Build();
+                Debug.Log(placed ? "✅ 갤러리+버튼 배치 완료. 다음: 🔌 텔레포트 자동 연결 → Ctrl+S."
+                                 : "ℹ 갤러리는 이미 있어 버튼만 배치. 다음: 🔌 텔레포트 자동 연결 → Ctrl+S.");
+            }
+            GUI.backgroundColor = Color.white;
+
+            EditorGUILayout.Space();
             GUI.backgroundColor = new Color(0.55f, 0.8f, 1f);
             if (GUILayout.Button("🔎 씬에서 드래프트룸·갤러리 위치 자동 채우기", GUILayout.Height(24))) AutoFill();
             GUI.backgroundColor = Color.white;
