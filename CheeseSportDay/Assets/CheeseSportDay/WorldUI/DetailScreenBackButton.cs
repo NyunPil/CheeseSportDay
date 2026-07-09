@@ -7,6 +7,7 @@ using VRC.Udon;
 [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync)]
 public class DetailScreenBackButton : UdonSharpBehaviour
 {
+    public ParticipantRosterScreen rosterScreen;
     public DetailScreen detailScreen;
 
     public override void Interact()
@@ -14,6 +15,11 @@ public class DetailScreenBackButton : UdonSharpBehaviour
         if (detailScreen == null)
         {
             return;
+        }
+
+        foreach (var item in rosterScreen.participantCards)
+        {
+            item.GetComponent<Collider>().enabled = true;
         }
 
         detailScreen.gameObject.SetActive(false);

@@ -195,6 +195,10 @@ namespace CheeseSportDay.WorldUI
                     : "";
             detailRoot.RefreshTeam(teamName);
 
+            foreach(var item in participantCards)
+            {
+                item.GetComponent<Collider>().enabled = false;
+            }
             detailRoot.gameObject.SetActive(true);
         }
 
