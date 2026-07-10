@@ -157,6 +157,33 @@ namespace CheeseSports
             GUI.backgroundColor = new Color(1f, 0.6f, 0.3f);
             if (GUILayout.Button("🔌 텔레포트 자동 연결 (버튼 4개)", GUILayout.Height(30))) WireTeleports();
             GUI.backgroundColor = Color.white;
+
+            EditorGUILayout.Space();
+            EditorGUILayout.HelpBox("🌀 매직 아우라를 Use 텔포로 만들기: 씬에서 아우라 선택 → 아래 목적지 버튼.\n콜라이더 + PortalTeleport 자동 세팅(Use=클릭으로 발동).", MessageType.None);
+            EditorGUILayout.BeginHorizontal();
+            GUI.backgroundColor = new Color(1f, 0.82f, 0.25f);
+            if (GUILayout.Button("→ 드래프트", GUILayout.Height(26))) MakeSelectedTeleport("Arrival_Draft");
+            GUI.backgroundColor = new Color(0.30f, 0.60f, 1f);
+            if (GUILayout.Button("→ 갤러리", GUILayout.Height(26))) MakeSelectedTeleport("Arrival_Gallery");
+            GUI.backgroundColor = new Color(0.20f, 1f, 0.40f);
+            if (GUILayout.Button("→ 팀원룸", GUILayout.Height(26))) MakeSelectedTeleport("Arrival_Team");
+            GUI.backgroundColor = Color.white;
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.Space();
+            EditorGUILayout.HelpBox("🔗 포탈끼리 직결 (마커 없이 반대편 아우라로 착지):\n① 도착 아우라 선택 → [도착지로 기억]\n② 출발 아우라 선택 → [여기서→기억한 곳으로]\n(짝마다 반복. 예: 갤러리아우라 기억 → 드래프트아우라에 연결)", MessageType.None);
+            EditorGUILayout.BeginHorizontal();
+            GUI.backgroundColor = new Color(0.8f, 0.7f, 1f);
+            if (GUILayout.Button("① 도착지로 기억", GUILayout.Height(26)))
+            {
+                _pendingDest = Selection.activeTransform;
+                Debug.Log(_pendingDest != null ? $"📌 도착지 기억: '{_pendingDest.name}'. 이제 출발 아우라 선택 후 ②." : "선택된 오브젝트가 없어요.");
+            }
+            if (GUILayout.Button("② 여기서 → 기억한 곳으로", GUILayout.Height(26)))
+                WireTeleportOn(Selection.activeGameObject, _pendingDest);
+            GUI.backgroundColor = Color.white;
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.LabelField("기억한 도착지", _pendingDest ? _pendingDest.name : "(없음)");
         }
 
         // 깨진 컴포넌트 정리 → 프로그램 애셋 생성/컴파일 → 4개 버튼 연결
@@ -223,6 +250,73 @@ namespace CheeseSports
             Debug.Log($"🔌 텔레포트 자동 연결 완료: {n}/4 버튼. 이제 버튼 누르면 이동해요.");
 #else
             Debug.LogWarning("UdonSharp를 못 찾았어요(UDONSHARP 미정의). 각 버튼에 PortalTeleport를 수동으로 붙여주세요.");
+#endif
+        }
+
+        static Transform _pendingDest;   // 포탈끼리 직결용 '기억한 도착지'
+
+        // Arrival 마커로 연결 (구버전 호환)
+        void MakeSelectedTeleport(string arrivalName)
+        {
+            var root = GameObject.Find(RootName);
+            if (root == null) { Debug.LogWarning("TeleportSystem이 없어요 — 먼저 [배치]로 도착지점(Arrival_)을 만드세요."); return; }
+            Transform arr = null;
+            foreach (var t in root.GetComponentsInChildren<Transform>(true))
+                if (t.name == arrivalName) { arr = t; break; }
+            if (arr == null) { Debug.LogWarning($"도착지점 '{arrivalName}'을 못 찾음. [배치] 했는지 확인."); return; }
+            WireTeleportOn(Selection.activeGameObject, arr);
+        }
+
+        // ★ 아무 오브젝트(아우라)를 Use 텔포로: 콜라이더 + PortalTeleport(destination=dest)
+        void WireTeleportOn(GameObject sel, Transform dest)
+        {
+            if (sel == null) { Debug.LogWarning("씬에서 아우라(텔포로 만들 오브젝트)를 먼저 선택하세요."); return; }
+            if (dest == null) { Debug.LogWarning("목적지가 없어요. [① 도착지로 기억]을 먼저 누르거나 목적지 버튼을 쓰세요."); return; }
+
+            // Use 클릭 판정용 콜라이더 없으면 추가 (트리거 아님)
+            if (sel.GetComponent<Collider>() == null)
+            {
+                var bc = Undo.AddComponent<BoxCollider>(sel);
+                bc.size = new Vector3(1.5f, 1.5f, 1.5f);
+                bc.center = new Vector3(0f, 0.75f, 0f);
+            }
+
+#if UDONSHARP
+            // 기존/깨진 PortalTeleport 정리
+            foreach (var comp in sel.GetComponents<PortalTeleport>())
+            {
+                var backing = UdonSharpEditor.UdonSharpEditorUtility.GetBackingUdonBehaviour(comp);
+                Object.DestroyImmediate(comp);
+                if (backing != null) Object.DestroyImmediate(backing);
+            }
+            foreach (var ub in sel.GetComponents<VRC.Udon.UdonBehaviour>()) Object.DestroyImmediate(ub);
+
+            var progAsset = UdonSharp.UdonSharpProgramAsset.GetProgramAssetForClass(typeof(PortalTeleport));
+            if (progAsset == null)
+            {
+                const string csPath = "Assets/CheeseSportsArena/Udon/PortalTeleport.cs";
+                const string aPath = "Assets/CheeseSportsArena/Udon/PortalTeleport.asset";
+                var mono = AssetDatabase.LoadAssetAtPath<MonoScript>(csPath);
+                if (mono == null) { Debug.LogWarning("PortalTeleport.cs 를 못 찾음: " + csPath); return; }
+                var np = ScriptableObject.CreateInstance<UdonSharp.UdonSharpProgramAsset>();
+                np.sourceCsScript = mono;
+                AssetDatabase.CreateAsset(np, aPath);
+                EditorUtility.SetDirty(np);
+                AssetDatabase.SaveAssets();
+                UdonSharp.UdonSharpProgramAsset.CompileAllCsPrograms(true);
+                AssetDatabase.Refresh();
+                Debug.Log("✅ PortalTeleport 프로그램 애셋 생성+컴파일 완료. 목적지 버튼을 한 번 더 누르세요.");
+                return;
+            }
+
+            var pt = UdonSharpEditor.UdonSharpUndo.AddComponent(sel, typeof(PortalTeleport)) as PortalTeleport;
+            if (pt == null) { Debug.LogWarning($"{sel.name}: PortalTeleport 추가 실패"); return; }
+            pt.destination = dest;
+            UdonSharpEditor.UdonSharpEditorUtility.CopyProxyToUdon(pt);
+            Dirty();
+            Debug.Log($"🌀 '{sel.name}' → '{dest.name}' 텔포 연결 완료 (Use로 발동).");
+#else
+            Debug.LogWarning("UdonSharp 미정의 — 수동으로 PortalTeleport를 붙이고 destination을 연결하세요.");
 #endif
         }
 
